@@ -15,6 +15,7 @@ import java.util.Scanner;
 public class Jugar{
     private ArrayList<ArrayList<Integer>> adyacencia;
     private ArrayList<Departamento> dptos;
+    private ArrayList<Jugador> jugadores;
     private int numJugadores;
     private int jugadorActual;
 
@@ -40,6 +41,11 @@ public class Jugar{
                 dptoAdyacentes.add(lineRead.nextInt() - 1);
             }
             adyacencia.add(dptoAdyacentes);
+        }
+
+        jugadores = new ArrayList<>(numJugadores);
+        for (int i = 0; i < numJugadores; i++) {
+            jugadores.add(new Jugador(i));
         }
         
         this.numJugadores = numJugadores;
@@ -74,14 +80,21 @@ public class Jugar{
             dptos.get(atk).reduceTropas();
         }
     }
-    
-    
+
     public boolean checkConquista(int target, int jugador){
         if (dptos.get(target).getNumTropas() == 0){
             dptos.get(target).setIdJugador(jugador);
             return true;
         }
         return false;
+    }
+
+    public void setTipoCartaJugador(int id, int carta){
+        jugadores.get(id).setTipoCarta(carta);
+    }
+
+    public int getTipoCartaJugador(int id){
+        return jugadores.get(id).getTipoCarta();
     }
     
     public void addTropas(int dpto){

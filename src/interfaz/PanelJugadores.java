@@ -39,19 +39,21 @@ public class PanelJugadores extends JPanel{
         for (int i = 0; i < numJugadores; i++) {
             c.gridy = i;
             PanelJugador jugador = new PanelJugador(i+1);
-//            switch(i) {
-//                case 0:
-//                    jugador.background(Color.red);
-//                    break;
-//                case 1:
-//                    jugador.background(Color.cyan);
-//                    break;
-//                case 2:
-//                    jugador.background(Color.green);
-//                    break;
-//                case 3:
-//                    jugador.background(Color.orange);
-//            }
+            /*
+            switch(i) {
+            case 0:
+            jugador.background(Color.red);
+            break;
+            case 1:
+            jugador.background(Color.cyan);
+            break;
+            case 2:
+            jugador.background(Color.green);
+            break;
+            case 3:
+            jugador.background(Color.orange);
+            }
+            */
             jugadores.add(jugador);
             add(jugadores.get(i), c);
             //c.anchor = GridBagConstraints.CENTER;

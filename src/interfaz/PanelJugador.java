@@ -20,6 +20,7 @@ public class PanelJugador extends JPanel{
     private PanelCartas cartas;
     private int idJugador;
     private Image img;
+    private Risk risk;
     
     public PanelJugador(int numJugador){
         idJugador = numJugador;
@@ -56,6 +57,10 @@ public class PanelJugador extends JPanel{
         //c.weightx = 0.000001;
         cartas = new PanelCartas();
         add(cartas, c);
+    }
+
+    public void updateInfo(int num){
+        tropas.setText("Tipo carta: " + num);
     }
     
 //    public void background(Color color){

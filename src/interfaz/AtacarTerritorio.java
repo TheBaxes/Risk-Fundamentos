@@ -39,6 +39,7 @@ public class AtacarTerritorio extends JFrame implements ActionListener{
     private int dado2;
     private int contAnim;
     private Timer timer;
+    private Timer esperar;
     
     public AtacarTerritorio(int atk, int target, int jugador, Risk risk,
             ArrayList<ImageIcon> dados){
@@ -70,6 +71,9 @@ public class AtacarTerritorio extends JFrame implements ActionListener{
         contAnim = 0;
         timer = new Timer(100, this);
         timer.setActionCommand("ejecutar");
+        esperar = new Timer(1000, this);
+        esperar.setActionCommand("esperar");
+        esperar.setRepeats(false);
         
         JButton boton = new JButton("tirar");
         boton.addActionListener(this);
@@ -80,15 +84,21 @@ public class AtacarTerritorio extends JFrame implements ActionListener{
         
         this.risk = risk;
         
+        comprobarAtaque();
+    }
+
+    private boolean comprobarAtaque(){
         try{
             risk.comprobarAtaque(atk, target, jugador);
+            return true;
         } catch(RiskException e){
             dispose();
             JOptionPane.showMessageDialog(risk, e.getMessage(),
                     "Error", JOptionPane.WARNING_MESSAGE);
         }
+        return false;
     }
-    
+
     private void playDiceSound(){
         try {
         InputStream in = new FileInputStream("res/dice_sound.wav");
@@ -114,17 +124,24 @@ public class AtacarTerritorio extends JFrame implements ActionListener{
             dado2Img.setIcon(dados.get(dado2 - 1));
             contAnim++;
             if(contAnim == 10) {
+                contAnim = 0;
                 atacar();
+                risk.testUpdate();
                 timer.stop();
+                esperar.start();
             }
         } else if(e.getActionCommand().equals("tirar")){
+            tirarDados();
+        } else if (e.getActionCommand().equals("esperar")) {
             tirarDados();
         }
     }
     
     private void tirarDados(){
-        playDiceSound();
-        timer.start();
+        if(comprobarAtaque()) {
+            playDiceSound();
+            timer.start();
+        }
     }
     
     private void reportarConquista(){

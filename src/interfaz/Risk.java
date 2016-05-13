@@ -54,9 +54,16 @@ public class Risk extends JFrame{
         //Test commands
         jugar.setJugador(0, 1);
         jugar.setJugador(1, 2);
-        jugar.addTropas(0);
-        jugar.addTropas(0);
-        jugar.addTropas(1);
+        for (int i = 0; i < 10; i++) {
+            jugar.addTropas(0);
+        }
+        for (int i = 0; i < 10; i++) {
+            jugar.addTropas(1);
+        }
+        testUpdate();
+    }
+
+    public void testUpdate(){
         juego.testUpdate();
     }
     
@@ -72,35 +79,20 @@ public class Risk extends JFrame{
     public boolean checkConquista(int target, int jugador){
         return jugar.checkConquista(target,jugador);
     }
+
     public int[] infoDpto(int idDpto){
         return jugar.getDpto(idDpto);
     }
-    
+
+    public void setTipoCartaJugador(int id, int carta){
+        jugar.setTipoCartaJugador(id, carta);
+    }
+
+    public int getTipoCartaJugador(int id){
+        return jugar.getTipoCartaJugador(id);
+    }
+
     public void imprimirDptos(){
         System.out.println(jugar);
     }
-    
-    /**
-     * CODIGO DE PRUEBA
-     * @param args the command line arguments
-     */
-    /*public static void main(String[] args) {
-        try{
-            /*
-            Dptos dptos = new Dptos();
-            dptos.setJugador(1, 1);
-            dptos.setJugador(2, 2);
-            dptos.addTropas(1);
-            dptos.addTropas(2);
-            dptos.addTropas(1);
-            dptos.atacar(1, 2, 1);
-            System.out.println(dptos);
-            /
-            
-            Risk risk = new Risk();
-            risk.setVisible(true);
-        } catch (Exception c){
-            System.err.println(c.getMessage());
-        }
-    }*/
 }
