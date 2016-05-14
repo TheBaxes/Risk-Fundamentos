@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package interfaz;
 
 import javax.swing.*;
@@ -21,7 +16,10 @@ public class AtacarTerritorio extends JFrame implements ActionListener{
     private WindowListener close = new WindowAdapter(){
         public void windowClosing(WindowEvent evt) {
                 timer.stop();
+                esperar.stop();
                 dispose();
+                risk.setEnabled(true);
+                risk.requestFocus();
                 if(risk.checkConquista(target, jugador)){
                     reportarConquista();
                 }
@@ -93,6 +91,8 @@ public class AtacarTerritorio extends JFrame implements ActionListener{
             return true;
         } catch(RiskException e){
             dispose();
+            risk.setEnabled(true);
+            risk.requestFocus();
             JOptionPane.showMessageDialog(risk, e.getMessage(),
                     "Error", JOptionPane.WARNING_MESSAGE);
         }
@@ -145,9 +145,14 @@ public class AtacarTerritorio extends JFrame implements ActionListener{
     }
     
     private void reportarConquista(){
+        risk.setEnabled(true);
+        risk.requestFocus();
+        MoverTropas moverTropas = new MoverTropas(atk, target, risk);
         this.dispose();
-        JOptionPane.showMessageDialog(risk, "Territorio conquistado",
-                "Felicidades", JOptionPane.INFORMATION_MESSAGE);
+
+//        JOptionPane.showMessageDialog(risk, "Territorio conquistado",
+//                "Felicidades", JOptionPane.INFORMATION_MESSAGE);
+
     }
     
     private void atacar(){

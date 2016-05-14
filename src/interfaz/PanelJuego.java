@@ -18,7 +18,6 @@ import java.util.ArrayList;
 public class PanelJuego extends JPanel implements MouseListener{
     private JLabel texto1;
     private JLabel texto2;
-    private AtacarTerritorio atacar;
     private Risk risk;
     private JLabel texto3;
     private ArrayList<ImageIcon> dados;
@@ -67,11 +66,12 @@ public class PanelJuego extends JPanel implements MouseListener{
             atk = 0;
             target = 1;
             jugador = 1;
-            atacar = new AtacarTerritorio(atk, target, jugador, risk, dados);
-            String atkJ = String.valueOf(risk.infoDpto(atk)[0]);
-            String atkT = String.valueOf(risk.infoDpto(atk)[1]);
-            String targetJ = String.valueOf(risk.infoDpto(target)[0]);
-            String targetT = String.valueOf(risk.infoDpto(target)[1]);
+            AtacarTerritorio atacar = new AtacarTerritorio(atk, target, jugador, risk, dados);
+            risk.setEnabled(false);
+            String atkJ = String.valueOf(risk.getJugadorDpto(atk));
+            String atkT = String.valueOf(risk.getTropasDpto(atk));
+            String targetJ = String.valueOf(risk.getJugadorDpto(target));
+            String targetT = String.valueOf(risk.getTropasDpto(target));
             texto3.setText("Dpto0 Jugador:" + atkJ + " Tropas:" + atkT +
                      " | Dpto1 " + "Jugador:" + targetJ + " Tropas:" + targetT);
             
@@ -80,10 +80,10 @@ public class PanelJuego extends JPanel implements MouseListener{
     }
     
     public void testUpdate(){
-        String atkJ = String.valueOf(risk.infoDpto(0)[0]);
-        String atkT = String.valueOf(risk.infoDpto(0)[1]);
-        String targetJ = String.valueOf(risk.infoDpto(1)[0]);
-        String targetT = String.valueOf(risk.infoDpto(1)[1]);
+        String atkJ = String.valueOf(risk.getJugadorDpto(0));
+        String atkT = String.valueOf(risk.getTropasDpto(0));
+        String targetJ = String.valueOf(risk.getJugadorDpto(1));
+        String targetT = String.valueOf(risk.getTropasDpto(1));
         texto3.setText("Dpto0 Jugador:" + atkJ + " Tropas:" + atkT +
                  " | Dpto1 " + "Jugador:" + targetJ + " Tropas:" + targetT);
     }
