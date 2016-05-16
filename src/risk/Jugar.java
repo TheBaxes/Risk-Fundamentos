@@ -75,9 +75,9 @@ public class Jugar{
     
     public void atacar(int atk, int target, int jugador, int dado1, int dado2){
         if(dado1 > dado2){
-            dptos.get(target).reduceTropas();
+            reduceTropas(target, 1);
         } else {
-            dptos.get(atk).reduceTropas();
+            reduceTropas(atk, 1);
         }
     }
 
@@ -89,6 +89,10 @@ public class Jugar{
         return false;
     }
 
+    public void moverTropas(int idA, int idB, int num){
+
+    }
+
     public void setTipoCartaJugador(int id, int carta){
         jugadores.get(id).setTipoCarta(carta);
     }
@@ -97,18 +101,23 @@ public class Jugar{
         return jugadores.get(id).getTipoCarta();
     }
     
-    public void addTropas(int dpto){
-        dptos.get(dpto).addTropas();
+    public void addTropas(int dpto, int cantidad){
+        dptos.get(dpto).addTropas(cantidad);
     }
     
-    public void reduceTropas(int dpto){
-        dptos.get(dpto).reduceTropas();
+    public void reduceTropas(int dpto, int cantidad){
+        dptos.get(dpto).reduceTropas(cantidad);
     }
     
     public void setJugador(int dpto, int jugador){
         dptos.get(dpto).setIdJugador(jugador);
     }
-    
+
+    /**
+     * Obtener datos del departamento
+     * @param idDpto Id del departamento
+     * @return Array en el cual la posición 0 es la id del jugador y la posición 1 es el número de tropas
+     */
     public int[] getDpto(int idDpto){
         int[] datos = new int[2];
         datos[0] = dptos.get(idDpto).getIdJugador();

@@ -28,12 +28,12 @@ public class Departamento{
         return numTropas;
     }
 
-    public void addTropas(){
-        this.numTropas++;
+    public void addTropas(int cantidad){
+        this.numTropas += cantidad;
     }
     
-    public void reduceTropas(){
-        this.numTropas--;
+    public void reduceTropas(int cantidad){
+        this.numTropas -= cantidad;
     }
 
     public int getIdJugador(){

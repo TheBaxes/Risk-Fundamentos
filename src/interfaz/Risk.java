@@ -7,7 +7,6 @@ package interfaz;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
 import java.io.FileNotFoundException;
 import risk.Jugar;
 import risk.RiskException;
@@ -54,12 +53,8 @@ public class Risk extends JFrame{
         //Test commands
         jugar.setJugador(0, 1);
         jugar.setJugador(1, 2);
-        for (int i = 0; i < 10; i++) {
-            jugar.addTropas(0);
-        }
-        for (int i = 0; i < 10; i++) {
-            jugar.addTropas(1);
-        }
+        jugar.addTropas(0, 10);
+        jugar.addTropas(1, 3);
         testUpdate();
     }
 
@@ -75,13 +70,25 @@ public class Risk extends JFrame{
     public void atacar(int atk, int target, int jugador, int dado1, int dado2){
         jugar.atacar(atk, target, jugador, dado1, dado2);
     }
-    
+
     public boolean checkConquista(int target, int jugador){
         return jugar.checkConquista(target,jugador);
     }
 
-    public int[] infoDpto(int idDpto){
-        return jugar.getDpto(idDpto);
+    public int getJugadorDpto(int idDpto){
+        return jugar.getDpto(idDpto)[0];
+    }
+
+    public int getTropasDpto(int idDpto){
+        return jugar.getDpto(idDpto)[1];
+    }
+
+    public void addTropasDpto(int idDpto, int cantidad){
+        jugar.addTropas(idDpto, cantidad);
+    }
+
+    public void reduceTropasDpto(int idDpto, int cantidad){
+        jugar.reduceTropas(idDpto,cantidad);
     }
 
     public void setTipoCartaJugador(int id, int carta){
