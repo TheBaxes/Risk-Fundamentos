@@ -84,7 +84,7 @@ public class Risk extends JFrame{
     }
 
     public void addTropasDpto(int idDpto, int cantidad){
-        jugar.addTropas(idDpto, 1);
+        jugar.addTropas(idDpto, cantidad);
     }
 
     public void reduceTropasDpto(int idDpto, int cantidad){

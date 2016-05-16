@@ -22,8 +22,6 @@ public class MoverTropas extends JFrame implements ActionListener{
         setResizable(false);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-        setUndecorated(true);
-
         this.risk = risk;
 
         this.idA = idA;
@@ -50,6 +48,8 @@ public class MoverTropas extends JFrame implements ActionListener{
 
         c.gridx = 1;
         add(seleccionar, c);
+
+        setVisible(true);
     }
 
     @Override

@@ -125,10 +125,10 @@ public class AtacarTerritorio extends JFrame implements ActionListener{
             contAnim++;
             if(contAnim == 10) {
                 contAnim = 0;
-                atacar();
-                risk.testUpdate();
                 timer.stop();
                 esperar.start();
+                atacar();
+                risk.testUpdate();
             }
         } else if(e.getActionCommand().equals("tirar")){
             tirarDados();
@@ -149,6 +149,7 @@ public class AtacarTerritorio extends JFrame implements ActionListener{
         risk.requestFocus();
         MoverTropas moverTropas = new MoverTropas(atk, target, risk);
         this.dispose();
+        esperar.stop();
 
 //        JOptionPane.showMessageDialog(risk, "Territorio conquistado",
 //                "Felicidades", JOptionPane.INFORMATION_MESSAGE);
