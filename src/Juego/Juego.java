@@ -12,15 +12,14 @@ import java.util.Scanner;
  *
  * @author Baxes
  */
-public class Jugar{
+public class Juego {
     private ArrayList<ArrayList<Integer>> adyacencia;
     private ArrayList<Departamento> dptos;
     private ArrayList<Jugador> jugadores;
     private int numJugadores;
     private int jugadorActual;
 
-    public Jugar(int numJugadores) throws RiskException, FileNotFoundException {
-        //jugar = new Jugar();
+    public Juego(int numJugadores) throws RiskException, FileNotFoundException {
         dptos = new ArrayList<>(32);
         for (int i = 0; i < 32; i++) {
             dptos.add(new Departamento(i));

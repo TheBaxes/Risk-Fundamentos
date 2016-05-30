@@ -8,7 +8,8 @@ package Interfaz;
 import javax.swing.*;
 import java.awt.*;
 import java.io.FileNotFoundException;
-import Juego.Jugar;
+
+import Juego.Juego;
 import Juego.RiskException;
 
 /**
@@ -18,7 +19,7 @@ import Juego.RiskException;
 public class Risk extends JFrame{
     private PanelJugadores jugadores;
     private PanelJuego juego;
-    private Jugar jugar;
+    private Juego jugar;
     private int jugadorActual;
     
     public Risk(int numJugadores){
@@ -38,7 +39,7 @@ public class Risk extends JFrame{
         setVisible(true);
         
         try{
-            this.jugar = new Jugar(numJugadores);
+            this.jugar = new Juego(numJugadores);
         } catch(FileNotFoundException e) {
             dispose();
             JOptionPane.showMessageDialog(this, "dptos_adyacencia.txt no "
