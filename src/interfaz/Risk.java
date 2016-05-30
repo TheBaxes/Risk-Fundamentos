@@ -3,13 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package interfaz;
+package Interfaz;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.FileNotFoundException;
-import risk.Jugar;
-import risk.RiskException;
+import Juego.Jugar;
+import Juego.RiskException;
 
 /**
  *
@@ -54,7 +54,7 @@ public class Risk extends JFrame{
         jugar.setJugador(0, 1);
         jugar.setJugador(1, 2);
         jugar.addTropas(0, 10);
-        jugar.addTropas(1, 3);
+        jugar.addTropas(1, 1);
         testUpdate();
     }
 
