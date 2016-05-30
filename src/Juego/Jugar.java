@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package risk;
+package Juego;
 import java.util.ArrayList;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -21,11 +21,11 @@ public class Jugar{
 
     public Jugar(int numJugadores) throws RiskException, FileNotFoundException {
         //jugar = new Jugar();
-        dptos = new ArrayList<Departamento>(32);
+        dptos = new ArrayList<>(32);
         for (int i = 0; i < 32; i++) {
             dptos.add(new Departamento(i));
         }
-        adyacencia = new ArrayList<ArrayList<Integer>>(32);
+        adyacencia = new ArrayList<>(32);
         Scanner in = new Scanner(new File("res/dptos_adyacencia.txt"));
         String line;
         for (int i = 0; i < 32; i++) {
@@ -36,7 +36,7 @@ public class Jugar{
                 throw new RiskException("La lista de adyacencia txt no está"
                         + " correctamente definida");
             }
-            ArrayList<Integer> dptoAdyacentes = new ArrayList<Integer>();
+            ArrayList<Integer> dptoAdyacentes = new ArrayList<>();
             while (lineRead.hasNext()) {
                 dptoAdyacentes.add(lineRead.nextInt() - 1);
             }

@@ -1,4 +1,4 @@
-package interfaz;
+package Interfaz;
 
 import javax.swing.*;
 import java.awt.*;
@@ -6,7 +6,7 @@ import java.awt.event.*;
 import java.util.ArrayList;
 import java.io.*;
 import sun.audio.*;
-import risk.RiskException;
+import Juego.RiskException;
 
 /**
  *
@@ -81,7 +81,8 @@ public class AtacarTerritorio extends JFrame implements ActionListener{
         setVisible(true);
         
         this.risk = risk;
-        
+
+        risk.setEnabled(false);
         comprobarAtaque();
     }
 
@@ -90,8 +91,8 @@ public class AtacarTerritorio extends JFrame implements ActionListener{
             risk.comprobarAtaque(atk, target, jugador);
             return true;
         } catch(RiskException e){
-            dispose();
             risk.setEnabled(true);
+            dispose();
             risk.requestFocus();
             JOptionPane.showMessageDialog(risk, e.getMessage(),
                     "Error", JOptionPane.WARNING_MESSAGE);

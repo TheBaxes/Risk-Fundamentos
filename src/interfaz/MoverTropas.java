@@ -1,9 +1,9 @@
-package interfaz;
+package Interfaz;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import risk.RiskException;
+
 /**
  * Created by Sebastian Patiño Barrientos.
  */
@@ -38,7 +38,7 @@ public class MoverTropas extends JFrame implements ActionListener{
         setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
 
-        JLabel a = new JLabel("Seleccione cantidad de tropas para mover al territorio conquistado");
+        JLabel a = new JLabel("Cantidad de tropas a mover");
         c.gridy = 0;
         add(a, c);
 
