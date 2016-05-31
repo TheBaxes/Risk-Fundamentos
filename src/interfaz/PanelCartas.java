@@ -19,8 +19,9 @@ public class PanelCartas extends JPanel{
     private ArrayList<JLabel> cartas;
     private ImageIcon carta = new ImageIcon("res/escudo.png","Escudo de Colombia - carta");
     private ImageIcon cartaClick = new ImageIcon("res/escudoClick.png", "Clickeado");
+    private int numJugador;
     
-    public PanelCartas(){
+    public PanelCartas(int numJugador){
 //        TitledBorder border = new TitledBorder("Cartas:");
 //        setBorder(border);
         
@@ -44,6 +45,8 @@ public class PanelCartas extends JPanel{
             add(boton, c);
             c.weightx *= 50;
         }
+
+        this.numJugador = numJugador;
     }
     
     public void change(int id){
@@ -54,7 +57,7 @@ public class PanelCartas extends JPanel{
             cartasclick[id] = true;
             cartas.get(id).setIcon(cartaClick);
         }
-        System.out.println("Carta nº" + id + " es " + cartasclick[id]);
+        System.out.println("Carta nº" + id + " del jugador " + numJugador + " es " + cartasclick[id]);
     }
     
     public void paintComponent(Graphics page){

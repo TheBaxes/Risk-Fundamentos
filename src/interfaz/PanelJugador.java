@@ -53,7 +53,7 @@ public class PanelJugador extends JPanel{
         c.anchor = GridBagConstraints.CENTER;
         c.fill = GridBagConstraints.HORIZONTAL;
         //c.weightx = 0.000001;
-        cartas = new PanelCartas();
+        cartas = new PanelCartas(numJugador);
         add(cartas, c);
     }
 

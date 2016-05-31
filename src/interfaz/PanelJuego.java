@@ -5,6 +5,8 @@
  */
 package Interfaz;
 
+import Juego.RiskException;
+
 import java.awt.image.BufferedImage;
 import java.io.*;
 import javax.imageio.ImageIO;
@@ -13,6 +15,7 @@ import javax.swing.border.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 /**
  *
@@ -23,6 +26,7 @@ public class PanelJuego extends JPanel implements MouseListener{
     private JLabel texto2;
     private Risk risk;
     private JLabel texto3;
+    private ArrayList<Boolean> test;
 
     private final Color amarillo = new Color(255, 255, 0);
     private final Color azul = new Color(0, 0, 255);
@@ -31,18 +35,10 @@ public class PanelJuego extends JPanel implements MouseListener{
     private final Color gris = new Color(97, 97, 97);
     private final Color blanco = new Color(255, 255, 255);
 
-    private BufferedImage fondo;
-    private JLabel back;
-    private BufferedImage zero1;
-    private JLabel map01;
-    private BufferedImage zero2;
-    private JLabel map02;
-    private BufferedImage zero3;
-    private JLabel map03;
-
     private ArrayList<ImageIcon> dados;
     private ArrayList<BufferedImage> mapaimg;
     private ArrayList<JLabel> mapa;
+    private ArrayList<ArrayList<Integer>> checkboxes;
 
     public PanelJuego(Risk risk) {
         //setPreferredSize(new Dimension(700, 600));
@@ -89,6 +85,21 @@ public class PanelJuego extends JPanel implements MouseListener{
                 mapa.add(dibujo);
                 add(dibujo);
             }
+
+            checkboxes = new ArrayList<>(500);
+            Scanner in = new Scanner(new File("res/dptos_checkbox.txt"));
+            String line;
+            while(in.hasNext()){
+                line = in.nextLine();
+                Scanner lineRead = new Scanner(line);
+                int pos = lineRead.nextInt() - 1;
+                ArrayList<Integer> dptoCoordenadas = new ArrayList<>(5);
+                dptoCoordenadas.add(pos);
+                for(int i = 0; i < 4; i++) {
+                    dptoCoordenadas.add(lineRead.nextInt());
+                }
+                checkboxes.add(dptoCoordenadas);
+            }
         } catch(IOException e){
             System.out.print("error404");
         }
@@ -96,6 +107,10 @@ public class PanelJuego extends JPanel implements MouseListener{
         addMouseListener(this);
         
         this.risk = risk;
+        test = new ArrayList<>(32);
+        for (int i = 0; i < 32; i++) {
+            test.add(true);
+        }
     }
     
 
@@ -103,30 +118,43 @@ public class PanelJuego extends JPanel implements MouseListener{
     public void mouseClicked(MouseEvent e){
         int x = e.getX();
         int y = e.getY();
+        for(ArrayList<Integer> check: checkboxes){
+            if(x >= check.get(1) && x < check.get(3) && y >= check.get(2) && y < check.get(4)){
+                if(test.get(check.get(0))) {
+                    changeColor(check.get(0), gris);
+                } else {
+                    changeColor(check.get(0), blanco);
+                }
+                test.set(check.get(0), !test.get(check.get(0)));
+                break;
+            }
+        }
         texto1.setText(String.valueOf(x));
         texto2.setText(String.valueOf(y));
         int atk = 0;
         int target = 0;
         int jugador = 0;
-        if(x > 390 && x < 600 &&
-                y > 400 && y < 600){
-            for (int i = 0; i < 32; i++) {
-                changeColor(i, azul);
-            }
-            atk = 0;
-            target = 1;
-            jugador = 1;
-            AtacarTerritorio atacar = new AtacarTerritorio(atk, target, jugador, risk, dados);
-            //risk.setEnabled(false);
-            String atkJ = String.valueOf(risk.getJugadorDpto(atk));
-            String atkT = String.valueOf(risk.getTropasDpto(atk));
-            String targetJ = String.valueOf(risk.getJugadorDpto(target));
-            String targetT = String.valueOf(risk.getTropasDpto(target));
-            texto3.setText("Dpto0 Jugador:" + atkJ + " Tropas:" + atkT +
-                     " | Dpto1 " + "Jugador:" + targetJ + " Tropas:" + targetT);
-            
-        }
+//        if(x > 390 && x < 600 &&
+//                y > 400 && y < 600){
+//            for (int i = 0; i < 32; i++) {
+//                changeColor(i, azul);
+//            }
+//            atk = 0;
+//            target = 1;
+//            jugador = 1;
+//            AtacarTerritorio atacar = new AtacarTerritorio(atk, target, jugador, risk, dados);
+//            //risk.setEnabled(false);
+//            String atkJ = String.valueOf(risk.getJugadorDpto(atk));
+//            String atkT = String.valueOf(risk.getTropasDpto(atk));
+//            String targetJ = String.valueOf(risk.getJugadorDpto(target));
+//            String targetT = String.valueOf(risk.getTropasDpto(target));
+//            texto3.setText("Dpto0 Jugador:" + atkJ + " Tropas:" + atkT +
+//                     " | Dpto1 " + "Jugador:" + targetJ + " Tropas:" + targetT);
+//
+//        }
         testUpdate();
+
+
     }
 
     public static boolean isAlpha(BufferedImage image, int x, int y)
