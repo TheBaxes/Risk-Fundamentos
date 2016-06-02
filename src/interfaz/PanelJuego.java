@@ -5,13 +5,10 @@
  */
 package Interfaz;
 
-import Juego.RiskException;
-
 import java.awt.image.BufferedImage;
 import java.io.*;
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.border.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
@@ -121,9 +118,9 @@ public class PanelJuego extends JPanel implements MouseListener{
         for(ArrayList<Integer> check: checkboxes){
             if(x >= check.get(1) && x < check.get(3) && y >= check.get(2) && y < check.get(4)){
                 if(test.get(check.get(0))) {
-                    changeColor(check.get(0), gris);
+                    cambiarColor(check.get(0), gris);
                 } else {
-                    changeColor(check.get(0), blanco);
+                        cambiarColor(check.get(0), blanco);
                 }
                 test.set(check.get(0), !test.get(check.get(0)));
                 break;
@@ -137,7 +134,7 @@ public class PanelJuego extends JPanel implements MouseListener{
 //        if(x > 390 && x < 600 &&
 //                y > 400 && y < 600){
 //            for (int i = 0; i < 32; i++) {
-//                changeColor(i, azul);
+//                cambiarColor(i, azul);
 //            }
 //            atk = 0;
 //            target = 1;
@@ -162,7 +159,7 @@ public class PanelJuego extends JPanel implements MouseListener{
         return (image.getRGB(x, y) & 0xFF000000) == 0xFF000000;
     }
 
-    public void changeColor(int dpto, Color color){
+    public void cambiarColor(int dpto, Color color){
         BufferedImage territorio = mapaimg.get(dpto);
         for(int y = 0; y < territorio.getHeight(); y++)
             for(int x = 0; x < territorio.getWidth(); x++)

@@ -15,7 +15,7 @@ import Juego.RiskException;
 public class AtacarTerritorio extends JFrame implements ActionListener{
     private WindowListener close = new WindowAdapter(){
         public void windowClosing(WindowEvent evt) {
-                timer.stop();
+                ejecutar.stop();
                 esperar.stop();
                 dispose();
                 risk.setEnabled(true);
@@ -36,7 +36,7 @@ public class AtacarTerritorio extends JFrame implements ActionListener{
     private int dado1;
     private int dado2;
     private int contAnim;
-    private Timer timer;
+    private Timer ejecutar;
     private Timer esperar;
     
     public AtacarTerritorio(int atk, int target, int jugador, Risk risk,
@@ -67,8 +67,8 @@ public class AtacarTerritorio extends JFrame implements ActionListener{
         dado2 = 0;
         
         contAnim = 0;
-        timer = new Timer(100, this);
-        timer.setActionCommand("ejecutar");
+        ejecutar = new Timer(100, this);
+        ejecutar.setActionCommand("ejecutar");
         esperar = new Timer(1000, this);
         esperar.setActionCommand("esperar");
         esperar.setRepeats(false);
@@ -126,7 +126,7 @@ public class AtacarTerritorio extends JFrame implements ActionListener{
             contAnim++;
             if(contAnim == 10) {
                 contAnim = 0;
-                timer.stop();
+                ejecutar.stop();
                 esperar.start();
                 atacar();
                 risk.testUpdate();
@@ -141,7 +141,7 @@ public class AtacarTerritorio extends JFrame implements ActionListener{
     private void tirarDados(){
         if(comprobarAtaque()) {
             playDiceSound();
-            timer.start();
+            ejecutar.start();
         }
     }
     

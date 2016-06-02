@@ -38,7 +38,7 @@ public class PanelCartas extends JPanel{
             boton.addMouseListener(new MouseAdapter(){
                 public void mouseClicked(MouseEvent e) {
                     int k = cartas.indexOf(boton);
-                    change(k);
+                    click(k);
                 }
             });
             cartas.add(boton);
@@ -49,7 +49,7 @@ public class PanelCartas extends JPanel{
         this.numJugador = numJugador;
     }
     
-    public void change(int id){
+    public void click(int id){
         if(cartasclick[id]){
             cartasclick[id] = false;
             cartas.get(id).setIcon(carta);

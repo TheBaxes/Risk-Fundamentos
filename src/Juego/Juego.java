@@ -88,8 +88,9 @@ public class Juego {
         return false;
     }
 
-    public void moverTropas(int idA, int idB, int num){
-
+    public void moverTropas(int idA, int idB, int cantidad){
+        addTropas(idA, cantidad);
+        reduceTropas(idB, cantidad);
     }
 
     public void setTipoCartaJugador(int id, int carta){
