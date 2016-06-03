@@ -72,6 +72,10 @@ public class Risk extends JFrame{
         jugar.atacar(atk, target, jugador, dado1, dado2);
     }
 
+    public void moverTropas(int idA, int idB, int cantidad){
+        jugar.moverTropas(idA, idB, cantidad);
+    }
+
     public boolean checkConquista(int target, int jugador){
         return jugar.checkConquista(target,jugador);
     }
