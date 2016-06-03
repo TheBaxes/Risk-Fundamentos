@@ -129,7 +129,7 @@ public class AtacarTerritorio extends JFrame implements ActionListener{
                 ejecutar.stop();
                 esperar.start();
                 atacar();
-                risk.testUpdate();
+                risk.update();
             }
         } else if(e.getActionCommand().equals("tirar")){
             tirarDados();

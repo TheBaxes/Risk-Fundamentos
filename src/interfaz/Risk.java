@@ -29,34 +29,40 @@ public class Risk extends JFrame{
         this.setResizable(false);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 
-        setLayout(new BorderLayout());
-        
-        juego = new PanelJuego(this);
-        add(juego, BorderLayout.CENTER);
-        jugadores = new PanelJugadores(numJugadores);
-        add(jugadores, BorderLayout.LINE_END);
-        
-        setVisible(true);
-        
         try{
             this.jugar = new Juego(numJugadores);
         } catch(FileNotFoundException e) {
             dispose();
             JOptionPane.showMessageDialog(this, "dptos_adyacencia.txt no "
                     + "existe en la carpeta del juego.", "Error al leer "
-                            + "archivos", JOptionPane.WARNING_MESSAGE);
+                    + "archivos", JOptionPane.WARNING_MESSAGE);
         } catch(RiskException e) {
             dispose();
-            JOptionPane.showMessageDialog(this, e.getMessage(), "Error", 
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Error",
                     JOptionPane.WARNING_MESSAGE);
         }
+
+        setLayout(new BorderLayout());
+
+
+
+        juego = new PanelJuego(this);
+        add(juego, BorderLayout.CENTER);
+        jugadores = new PanelJugadores(numJugadores);
+        add(jugadores, BorderLayout.LINE_END);
         
+        setVisible(true);
+
         //Test commands
         jugar.setJugador(0, 1);
         jugar.setJugador(1, 2);
         jugar.addTropas(0, 10);
-        jugar.addTropas(1, 1);
-        testUpdate();
+        jugar.addTropas(1, 3);
+        update();
+    }
+
+    public void update(){
+        juego.update();
     }
 
     public void testUpdate(){

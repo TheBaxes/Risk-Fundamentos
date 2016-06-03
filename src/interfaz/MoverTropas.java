@@ -56,7 +56,7 @@ public class MoverTropas extends JFrame implements ActionListener{
     public void actionPerformed(ActionEvent e) {
         int cantidad = (int) cantidadTropas.getValue();
         risk.moverTropas(idA, idB, cantidad);
-        risk.testUpdate();
+        risk.update();
         risk.setEnabled(true);
         risk.requestFocus();
         this.dispose();

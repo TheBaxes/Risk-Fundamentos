@@ -21,14 +21,23 @@ import java.util.Scanner;
 public class PanelJuego extends JPanel implements MouseListener{
     private JLabel texto1;
     private JLabel texto2;
-    private Risk risk;
     private JLabel texto3;
     private ArrayList<Boolean> test;
 
-    private final Color amarillo = new Color(255, 255, 0);
+    private Risk risk;
+    private Image fondoimg;
+    private JTextArea msgbox;
+    private Msgbox msg;
+    private final String nuevalinea = "\n";
+
+    private final Color amarillo = new Color(240, 240, 0);
+    private final Color amarilloSelect = new Color(255, 217, 39);
     private final Color azul = new Color(0, 0, 255);
+    private final Color azulSelect = new Color(26, 119, 255);
     private final Color rojo = new Color(225, 0, 0);
+    private final Color rojoSelect = new Color(255, 74, 6);
     private final Color verde = new Color(0, 225, 0);
+    private final Color verdeSelect = new Color(3, 255, 89);
     private final Color gris = new Color(97, 97, 97);
     private final Color blanco = new Color(255, 255, 255);
 
@@ -36,6 +45,10 @@ public class PanelJuego extends JPanel implements MouseListener{
     private ArrayList<BufferedImage> mapaimg;
     private ArrayList<JLabel> mapa;
     private ArrayList<ArrayList<Integer>> checkboxes;
+    private ArrayList<JLabel> tropas;
+
+    private boolean seleccionar;
+    private int seleccionid;
 
     public PanelJuego(Risk risk) {
         //setPreferredSize(new Dimension(700, 600));
@@ -49,26 +62,27 @@ public class PanelJuego extends JPanel implements MouseListener{
         
         setLayout(null);
         
-        texto1 = new JLabel("x");
-        texto1.setBounds(10,10, 100, 20);
-        add(texto1);
-        
-        texto2 = new JLabel("y");
-        texto2.setBounds(100, 10, 100, 20);
-        add(texto2);
+//        texto1 = new JLabel("x");
+//        texto1.setBounds(10,10, 100, 20);
+//        add(texto1);
+//
+//        texto2 = new JLabel("y");
+//        texto2.setBounds(100, 10, 100, 20);
+//        add(texto2);
         
         texto3 = new JLabel("123");
-        texto3.setBounds(10, 600, 400, 20);
+        texto3.setBounds(0, 0, 400, 20);
         add(texto3);
 
         mapaimg = new ArrayList<>(32);
         mapa = new ArrayList<>(32);
+        tropas = new ArrayList<>(32);
 
         try {
-            BufferedImage fondoimg = ImageIO.read(new File("res/mapa/fondo.png"));
-            JLabel fondo = new JLabel(new ImageIcon(fondoimg));
-            fondo.setBounds(0, 0, 717, 670);
-            add(fondo);
+            fondoimg = ImageIO.read(new File("res/mapa/fondo.png"));
+            //JLabel fondo = new JLabel(new ImageIcon(fondoimg));
+            //fondo.setBounds(0, 0, 717, 670);
+            //add(fondo);
             for (int i = 1; i <= 32; i++) {
                 BufferedImage imagen;
                 if(i < 10) {
@@ -83,7 +97,7 @@ public class PanelJuego extends JPanel implements MouseListener{
                 add(dibujo);
             }
 
-            checkboxes = new ArrayList<>(500);
+            checkboxes = new ArrayList<>(557);
             Scanner in = new Scanner(new File("res/dptos_checkbox.txt"));
             String line;
             while(in.hasNext()){
@@ -97,37 +111,66 @@ public class PanelJuego extends JPanel implements MouseListener{
                 }
                 checkboxes.add(dptoCoordenadas);
             }
+
+            in = new Scanner(new File("res/dptos_numpos.txt"));
+            for (int i = 0; i < 32; i++) {
+                int pos = in.nextInt();
+                if(i != pos - 1) throw new IOException();
+                int x = in.nextInt();
+                int y = in.nextInt() - 5;
+                JLabel tropa = new JLabel(risk.getTropasDpto(i) + "");
+                tropa.setBounds(x, y, 20, 20);
+                tropas.add(tropa);
+                mapa.get(i).add(tropa);
+            }
         } catch(IOException e){
-            System.out.print("error404");
+            JOptionPane.showMessageDialog(this, "Error", "Error al leer archivos del juego",
+                    JOptionPane.WARNING_MESSAGE);
         }
-        
+
+        msg = new Msgbox();
+        msg.setBounds(10, 530, 310, 128);
+        add(msg);
+
         addMouseListener(this);
-        
+
         this.risk = risk;
         test = new ArrayList<>(32);
         for (int i = 0; i < 32; i++) {
             test.add(true);
         }
+        seleccionar = false;
+        seleccionid = 0;
     }
-    
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        g.drawImage(fondoimg, 0, 0, null);
+    }
 
     //datos de prueba en el metodo
     public void mouseClicked(MouseEvent e){
         int x = e.getX();
         int y = e.getY();
+        //msg.print(String.valueOf(x) + " " + String.valueOf(y));
         for(ArrayList<Integer> check: checkboxes){
             if(x >= check.get(1) && x < check.get(3) && y >= check.get(2) && y < check.get(4)){
+                seleccionarAtaque(check.get(0));
+
+                //test
                 if(test.get(check.get(0))) {
-                    cambiarColor(check.get(0), gris);
+                    cambiarColor(check.get(0), verde);
                 } else {
-                        cambiarColor(check.get(0), blanco);
+                        cambiarColor(check.get(0), verdeSelect);
                 }
                 test.set(check.get(0), !test.get(check.get(0)));
                 break;
             }
         }
-        texto1.setText(String.valueOf(x));
-        texto2.setText(String.valueOf(y));
+        //texto1.setText(String.valueOf(x));
+        //texto2.setText(String.valueOf(y));
+
         int atk = 0;
         int target = 0;
         int jugador = 0;
@@ -159,6 +202,18 @@ public class PanelJuego extends JPanel implements MouseListener{
         return (image.getRGB(x, y) & 0xFF000000) == 0xFF000000;
     }
 
+    private void seleccionarAtaque(int dpto){
+        if(seleccionar){
+            AtacarTerritorio atacar = new AtacarTerritorio(seleccionid, dpto, 1, risk, dados);
+            msg.print("El jugador " + 1 + " ha atacado a " + dpto + " usando " + seleccionid);
+            seleccionar = false;
+        } else {
+            seleccionid = dpto;
+            seleccionar = true;
+            msg.print("El jugador " + 1 + " ha seleccionado " + dpto);
+        }
+    }
+
     public void cambiarColor(int dpto, Color color){
         BufferedImage territorio = mapaimg.get(dpto);
         for(int y = 0; y < territorio.getHeight(); y++)
@@ -172,6 +227,12 @@ public class PanelJuego extends JPanel implements MouseListener{
             }
         mapaimg.set(dpto, territorio);
         repaint();
+    }
+
+    public void update(){
+        for (int i = 0; i < 32; i++) {
+            tropas.get(i).setText(risk.getTropasDpto(i) + "");
+        }
     }
 
     public void testUpdate(){

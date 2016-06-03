@@ -21,9 +21,6 @@ public class Juego {
 
     public Juego(int numJugadores) throws RiskException, FileNotFoundException {
         dptos = new ArrayList<>(32);
-        for (int i = 0; i < 32; i++) {
-            dptos.add(new Departamento(i));
-        }
         adyacencia = new ArrayList<>(32);
         Scanner in = new Scanner(new File("res/dptos_adyacencia.txt"));
         String line;
@@ -40,6 +37,8 @@ public class Juego {
                 dptoAdyacentes.add(lineRead.nextInt() - 1);
             }
             adyacencia.add(dptoAdyacentes);
+
+            dptos.add(new Departamento(i));
         }
 
         jugadores = new ArrayList<>(numJugadores);
@@ -89,8 +88,8 @@ public class Juego {
     }
 
     public void moverTropas(int idA, int idB, int cantidad){
-        addTropas(idA, cantidad);
-        reduceTropas(idB, cantidad);
+        addTropas(idB, cantidad);
+        reduceTropas(idA, cantidad);
     }
 
     public void setTipoCartaJugador(int id, int carta){

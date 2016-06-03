@@ -11,6 +11,7 @@ package Juego;
  */
 public class Departamento{
     private final int id;
+    private String nombre;
     private int numTropas;
     private int idJugador;
 

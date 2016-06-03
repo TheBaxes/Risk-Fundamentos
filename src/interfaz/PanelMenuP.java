@@ -78,7 +78,9 @@ public class PanelMenuP extends JPanel implements ActionListener{
     
     public void actionPerformed(ActionEvent evento){
         String comando = evento.getActionCommand();
-        
+        dosJ.setEnabled(false);
+        tresJ.setEnabled(false);
+        cuatroJ.setEnabled(false);
         switch(comando){
             case "dos":
                 menu.abrirJuego(2);
