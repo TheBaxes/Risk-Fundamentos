@@ -168,8 +168,6 @@ public class PanelJuego extends JPanel implements MouseListener{
                 break;
             }
         }
-        //texto1.setText(String.valueOf(x));
-        //texto2.setText(String.valueOf(y));
 
         int atk = 0;
         int target = 0;
@@ -192,7 +190,6 @@ public class PanelJuego extends JPanel implements MouseListener{
 //                     " | Dpto1 " + "Jugador:" + targetJ + " Tropas:" + targetT);
 //
 //        }
-        testUpdate();
 
 
     }
@@ -233,15 +230,6 @@ public class PanelJuego extends JPanel implements MouseListener{
         for (int i = 0; i < 32; i++) {
             tropas.get(i).setText(risk.getTropasDpto(i) + "");
         }
-    }
-
-    public void testUpdate(){
-        String atkJ = String.valueOf(risk.getJugadorDpto(0));
-        String atkT = String.valueOf(risk.getTropasDpto(0));
-        String targetJ = String.valueOf(risk.getJugadorDpto(1));
-        String targetT = String.valueOf(risk.getTropasDpto(1));
-        texto3.setText("Dpto0 Jugador:" + atkJ + " Tropas:" + atkT +
-                 " | Dpto1 " + "Jugador:" + targetJ + " Tropas:" + targetT);
     }
 
     @Override

@@ -64,10 +64,6 @@ public class Risk extends JFrame{
     public void update(){
         juego.update();
     }
-
-    public void testUpdate(){
-        juego.testUpdate();
-    }
     
     public void comprobarAtaque(int atk, int target, int jugador)
             throws RiskException{
