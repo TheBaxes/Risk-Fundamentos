@@ -15,10 +15,11 @@ public class Departamento{
     private int numTropas;
     private int idJugador;
 
-    public Departamento(int id){
+    public Departamento(int id, String nombre){
         this.id = id;
+        this.nombre = nombre;
         numTropas = 0;
-        idJugador = 0;
+        idJugador = -1;
     }
 
     public int getId(){
@@ -43,6 +44,10 @@ public class Departamento{
 
     public void setIdJugador(int idJugador){
         this.idJugador = idJugador;
+    }
+
+    public String getNombre(){
+        return nombre;
     }
 
     @Override
