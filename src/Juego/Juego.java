@@ -4,9 +4,15 @@
  * and open the template in the editor.
  */
 package Juego;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.Locale;
 import java.util.Scanner;
 /**
  *
@@ -20,22 +26,21 @@ public class Juego {
     private int jugadorActual;
     private int fase;
 
-    public Juego(int numJugadores) throws RiskException, FileNotFoundException {
+    public Juego(int numJugadores) throws RiskException, IOException {
         dptos = new ArrayList<>(32);
         adyacencia = new ArrayList<>(32);
         Scanner in = new Scanner(new File("res/dptos_adyacencia.txt"));
-        Scanner name = new Scanner(new File("res/dptos_nombres.txt"));
+        Scanner nombre = new Scanner(Paths.get("res/dptos_nombres.txt"), StandardCharsets.ISO_8859_1.name());
+        Scanner region = new Scanner(Paths.get("res/dptos_regiones.txt"), StandardCharsets.ISO_8859_1.name());
         String line;
-        String linetwo;
         for (int i = 0; i < 32; i++) {
             line = in.nextLine();
-            linetwo = name.nextLine();
             Scanner lineRead = new Scanner(line);
-            Scanner line2Read = new Scanner(linetwo);
             int pos = lineRead.nextInt() - 1;
-            int pos2 = line2Read.nextInt() - 1;
-            if(pos != i && pos2 != i){
-                throw new RiskException("La lista de adyacencia txt no está"
+            int pos2 = nombre.nextInt() - 1;
+            int pos3 = region.nextInt() - 1;
+            if(pos != i && pos2 != i && pos3 != i){
+                throw new RiskException("La lista de adyacencia o de nombres no está"
                         + " correctamente definida");
             }
             ArrayList<Integer> dptoAdyacentes = new ArrayList<>();
@@ -44,9 +49,7 @@ public class Juego {
             }
             adyacencia.add(dptoAdyacentes);
 
-            dptos.add(new Departamento(i, "asdf"));
-
-            System.out.println(line2Read.nextLine());
+            dptos.add(new Departamento(i, nombre.nextLine().substring(1), region.nextLine().substring(1)));
         }
 
         jugadores = new ArrayList<>(numJugadores);
@@ -144,7 +147,13 @@ public class Juego {
         return datos;
     }
     
-    
+    public String getNombreDpto(int idDpto){
+        return dptos.get(idDpto).getNombre();
+    }
+
+    public String getRegionDpto(int idDpto){
+        return dptos.get(idDpto).getRegion();
+    }
 
     @Override
     public String toString() {

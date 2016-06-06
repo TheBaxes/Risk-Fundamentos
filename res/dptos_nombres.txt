@@ -1,0 +1,32 @@
+1 San Andrés y Providencia
+2 Atlántico
+3 Magdalena
+4 La Guajira
+5 Cesar
+6 Sucre
+7 Bolívar
+8 Norte de Santander
+9 Córdoba
+10 Antioquia
+11 Santander
+12 Chocó
+13 Risaralda
+14 Caldas
+15 Boyacá
+16 Arauca
+17 Valle del Cauca
+18 Quindio
+19 Tolima
+20 Cundinamarca
+21 Casanare
+22 Nariño
+23 Cauca
+24 Huila
+25 Meta
+26 Vichada
+27 Putumayo
+28 Caquetá
+29 Guavira
+30 Guainía
+31 Vaupés
+32 Amazonas

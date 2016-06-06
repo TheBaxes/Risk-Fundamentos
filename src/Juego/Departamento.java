@@ -12,12 +12,14 @@ package Juego;
 public class Departamento{
     private final int id;
     private String nombre;
+    private String region;
     private int numTropas;
     private int idJugador;
 
-    public Departamento(int id, String nombre){
+    public Departamento(int id, String nombre, String region){
         this.id = id;
         this.nombre = nombre;
+        this.region = region;
         numTropas = 0;
         idJugador = -1;
     }
@@ -48,6 +50,10 @@ public class Departamento{
 
     public String getNombre(){
         return nombre;
+    }
+
+    public String getRegion(){
+        return region;
     }
 
     @Override

@@ -83,7 +83,7 @@ public class AtacarTerritorio extends JFrame implements ActionListener{
         this.risk = risk;
 
         risk.setEnabled(false);
-        comprobarAtaque();
+        if(comprobarAtaque()) risk.print("El jugador " + (jugador+1) + " ha atacado " + target + " usando " + atk);
     }
 
     private boolean comprobarAtaque(){
@@ -95,7 +95,8 @@ public class AtacarTerritorio extends JFrame implements ActionListener{
             dispose();
             risk.requestFocus();
             JOptionPane.showMessageDialog(risk, e.getMessage(),
-                    "Error", JOptionPane.WARNING_MESSAGE);
+                    "Aviso", JOptionPane.WARNING_MESSAGE);
+            risk.print(e.getMessage());
         }
         return false;
     }

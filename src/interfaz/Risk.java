@@ -8,6 +8,7 @@ package Interfaz;
 import javax.swing.*;
 import java.awt.*;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import Juego.Juego;
 import Juego.RiskException;
@@ -21,6 +22,7 @@ public class Risk extends JFrame{
     private PanelJuego juego;
     private Juego jugar;
     private int jugadorActual;
+    private Msgbox msg;
     
     public Risk(int numJugadores){
         this.setTitle("Colombia Conquest");
@@ -40,6 +42,9 @@ public class Risk extends JFrame{
             dispose();
             JOptionPane.showMessageDialog(this, e.getMessage(), "Error",
                     JOptionPane.WARNING_MESSAGE);
+        } catch(IOException e){
+            dispose();
+            JOptionPane.showMessageDialog(this, "Error al leer archivos del juego", "Error", JOptionPane.WARNING_MESSAGE);
         }
 
         setLayout(new BorderLayout());
@@ -54,10 +59,10 @@ public class Risk extends JFrame{
         setVisible(true);
 
         //Test commands
-        jugar.setJugador(0, 1);
-        jugar.setJugador(1, 2);
+        jugar.setJugador(0, 0);
+        jugar.setJugador(1, 1);
         jugar.addTropas(0, 10);
-        jugar.addTropas(1, 3);
+        jugar.addTropas(1, 1);
         update();
     }
 
@@ -74,6 +79,14 @@ public class Risk extends JFrame{
         jugar.atacar(atk, target, jugador, dado1, dado2);
     }
 
+    public void print(String message){
+        msg.print(message);
+    }
+
+    public int cambiarFase(){
+        return jugar.cambiarFase();
+    }
+
     public void moverTropas(int idA, int idB, int cantidad){
         jugar.moverTropas(idA, idB, cantidad);
     }
@@ -82,12 +95,24 @@ public class Risk extends JFrame{
         return jugar.checkConquista(target,jugador);
     }
 
+    public boolean checkTerritorio(int dpto, int jugador){
+        return jugar.checkTerritorio(dpto, jugador);
+    }
+
     public int getJugadorDpto(int idDpto){
         return jugar.getDpto(idDpto)[0];
     }
 
     public int getTropasDpto(int idDpto){
         return jugar.getDpto(idDpto)[1];
+    }
+
+    public String getNombreDpto(int idDpto){
+        return jugar.getNombreDpto(idDpto);
+    }
+
+    public String getRegionDpto(int idDpto){
+        return jugar.getRegionDpto(idDpto);
     }
 
     public void addTropasDpto(int idDpto, int cantidad){
@@ -106,7 +131,7 @@ public class Risk extends JFrame{
         return jugar.getTipoCartaJugador(id);
     }
 
-    public void imprimirDptos(){
-        System.out.println(jugar);
+    public void setMsgbox(Msgbox msg){
+        this.msg = msg;
     }
 }
