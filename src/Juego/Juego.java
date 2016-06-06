@@ -18,17 +18,23 @@ public class Juego {
     private ArrayList<Jugador> jugadores;
     private int numJugadores;
     private int jugadorActual;
+    private int fase;
 
     public Juego(int numJugadores) throws RiskException, FileNotFoundException {
         dptos = new ArrayList<>(32);
         adyacencia = new ArrayList<>(32);
         Scanner in = new Scanner(new File("res/dptos_adyacencia.txt"));
+        Scanner name = new Scanner(new File("res/dptos_nombres.txt"));
         String line;
+        String linetwo;
         for (int i = 0; i < 32; i++) {
             line = in.nextLine();
+            linetwo = name.nextLine();
             Scanner lineRead = new Scanner(line);
+            Scanner line2Read = new Scanner(linetwo);
             int pos = lineRead.nextInt() - 1;
-            if(pos != i){
+            int pos2 = line2Read.nextInt() - 1;
+            if(pos != i && pos2 != i){
                 throw new RiskException("La lista de adyacencia txt no está"
                         + " correctamente definida");
             }
@@ -38,7 +44,9 @@ public class Juego {
             }
             adyacencia.add(dptoAdyacentes);
 
-            dptos.add(new Departamento(i));
+            dptos.add(new Departamento(i, "asdf"));
+
+            System.out.println(line2Read.nextLine());
         }
 
         jugadores = new ArrayList<>(numJugadores);
@@ -52,23 +60,25 @@ public class Juego {
     
     public void comprobarAtaque(int atk, int target, int jugador)
             throws RiskException {
-        if(jugador == dptos.get(target).getIdJugador()){
-            throw new RiskException("El territorio ya le pertenece al jugador");
+        if(checkTerritorio(target, jugador)){
+            throw new RiskException(target + " ya le pertenece al jugador");
         }
-        if(jugador != dptos.get(atk).getIdJugador()){
-            throw new RiskException("El territorio no pertenece al jugador");
+        if(!checkTerritorio(atk, jugador)){
+            throw new RiskException(atk + " no pertenece al jugador");
         }
         if(dptos.get(atk).getNumTropas() <= 1){
-            throw new RiskException("El territorio no tiene tropas suficientes"
-                    + " para atacar");
+            throw new RiskException(atk + " no tiene tropas suficientes para continuar");
         }
         if(dptos.get(target).getNumTropas() <= 0){
-            throw new RiskException("Error, el territorio objetivo no tiene tropas");
+            throw new RiskException(target + " no tiene tropas para ser atacado");
         }
         if(!adyacencia.get(atk).contains(target)){
-            throw new RiskException("El territorio a atacar no es adyacente al"
-                    + " territorio del jugador");
+            throw new RiskException(target + " no es adyacente a" + atk);
         }
+    }
+
+    public boolean checkTerritorio(int dpto, int jugador){
+        return jugador == dptos.get(dpto).getIdJugador();
     }
     
     public void atacar(int atk, int target, int jugador, int dado1, int dado2){
@@ -90,6 +100,16 @@ public class Juego {
     public void moverTropas(int idA, int idB, int cantidad){
         addTropas(idB, cantidad);
         reduceTropas(idA, cantidad);
+    }
+
+    public int cambiarFase(){
+        fase++;
+        if(fase == 4) fase = 1;
+        return fase;
+    }
+
+    public void checkInicio(){
+
     }
 
     public void setTipoCartaJugador(int id, int carta){
