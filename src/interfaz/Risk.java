@@ -9,6 +9,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import Juego.Juego;
 import Juego.RiskException;
@@ -32,7 +33,7 @@ public class Risk extends JFrame{
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 
         try{
-            this.jugar = new Juego(numJugadores);
+            this.jugar = new Juego(numJugadores, this);
         } catch(FileNotFoundException e) {
             dispose();
             JOptionPane.showMessageDialog(this, "dptos_adyacencia.txt no "
@@ -53,7 +54,7 @@ public class Risk extends JFrame{
 
         juego = new PanelJuego(this);
         add(juego, BorderLayout.CENTER);
-        jugadores = new PanelJugadores(numJugadores);
+        jugadores = new PanelJugadores(numJugadores, this);
         add(jugadores, BorderLayout.LINE_END);
         
         setVisible(true);
@@ -61,9 +62,26 @@ public class Risk extends JFrame{
         //Test commands
         jugar.setJugador(0, 0);
         jugar.setJugador(1, 1);
+        jugar.setJugador(6, 2);
+        jugar.setJugador(5, 3);
+        jugar.setJugador(8, 1);
+        jugar.setJugador(9, 1);
+        jugar.setJugador(11, 3);
+        //7 6 9 10 12
         jugar.addTropas(0, 10);
         jugar.addTropas(1, 1);
+        jugar.addTropas(6, 1);
+        jugar.addTropas(5, 1);
+        jugar.addTropas(8, 1);
+        jugar.addTropas(9, 1);
+        jugar.addTropas(11, 1);
         update();
+
+        agregarCarta(0);
+        agregarCarta(0);
+        agregarCarta(0);
+        agregarCarta(0);
+        agregarCarta(0);
     }
 
     public void update(){
@@ -99,6 +117,28 @@ public class Risk extends JFrame{
         return jugar.checkTerritorio(dpto, jugador);
     }
 
+    public int seleccionarCarta(int posCarta, int jugador){
+        return jugar.seleccionarCarta(posCarta, jugador);
+    }
+
+    public void deseleccionarCarta(int posCarta, int jugador){
+        jugar.deseleccionarCarta(posCarta, jugador);
+    }
+
+    public boolean checkContCartas(int jugador){
+        return jugar.checkContCartas(jugador);
+    }
+
+    public void agregarCarta(int jugador){
+        int carta = (int)(Math.random()*4);
+        jugadores.agregarCarta(jugador, carta);
+        jugar.addCarta(jugador, carta);
+    }
+
+    public ArrayList<Integer> getCartas(int jugador){
+        return jugar.getCartas(jugador);
+    }
+
     public int getJugadorDpto(int idDpto){
         return jugar.getDpto(idDpto)[0];
     }
@@ -123,12 +163,8 @@ public class Risk extends JFrame{
         jugar.reduceTropas(idDpto,cantidad);
     }
 
-    public void setTipoCartaJugador(int id, int carta){
-        jugar.setTipoCartaJugador(id, carta);
-    }
-
-    public int getTipoCartaJugador(int id){
-        return jugar.getTipoCartaJugador(id);
+    public void updateTropas(int jugador){
+        jugadores.updateTropas(jugador);
     }
 
     public void setMsgbox(Msgbox msg){

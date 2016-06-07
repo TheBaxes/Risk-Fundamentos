@@ -5,6 +5,7 @@
  */
 package Juego;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**
@@ -14,16 +15,18 @@ import java.util.ArrayList;
 public class Jugador {
     private final int id;
     private int tropas;
-    private int tipoCarta;
     private int contCartas;
-    private final ArrayList<Integer> cartas;
+    private ArrayList<Integer> cartas;
+    private boolean[] cartasSel;
+    private ArrayList<Integer> cartasClick;
+    private int cartasComodin;
     
     public Jugador(int idJugador){
         this.id = idJugador;
-        tropas = 0;
-        tipoCarta = 0;
         contCartas = 0;
         cartas = new ArrayList<>(5);
+        cartasSel = new boolean[5];
+        cartasClick = new ArrayList<>(5);
     }
 
     public int getId(){
@@ -44,29 +47,69 @@ public class Jugador {
             throw new RiskException("Tropas negativas");
         }
     }
-
-    public int getTipoCarta(){
-        return tipoCarta;
-    }
-
-    public void setTipoCarta(int tipoCarta){
-        this.tipoCarta = tipoCarta;
-    }
     
-    public int getContCartas(){
+    public boolean checkContCartas(){
+        contCartas = 0;
+        boolean check = false;
+//        if ((checkCartas[0] >= 1 && checkCartas[1] >= 1 && checkCartas[2] >= 1) ||
+//                (checkCartas[0] == 3 || checkCartas[1] == 3 || checkCartas[2] == 3)){
+//            for (int i = 0; i < 3; i++) {
+//                checkCartas[i] = 0;
+//            }
+//            int remove = 0;
+//            for (int i = 0; i < 5; i++) {
+//                if(cartasSel[i]){
+//                    cartasSel[i] = false;
+//                    cartas.remove(i - remove);
+//                    remove++;
+//                }
+//            }
+//            return true;
+//        }
+        if (cartasComodin == 0) {
+            if ((cartasClick.get(0) == cartasClick.get(1) && cartasClick.get(1) == cartasClick.get(2)
+                    && cartasClick.get(2) == cartasClick.get(0))) {
+                check = true;
+            } else if ((cartasClick.get(0) != cartasClick.get(1)
+                    && cartasClick.get(1) != cartasClick.get(2) && cartasClick.get(2) != cartasClick.get(0))) {
+                check = true;
+            }
+        } else {
+            check = true;
+        }
+        cartasClick.clear();
+        int remove = 0;
+        for (int i = 0; i < 5; i++) {
+            if(cartasSel[i]){
+                cartasSel[i] = false;
+                cartas.remove(i - remove);
+                remove++;
+            }
+        }
+        return check;
+    }
+
+    public int seleccionarCarta(int posCarta){
+        contCartas++;
+        int id = cartas.get(posCarta);
+        if(id < 3){
+            cartasClick.add(id);
+        } else {
+            cartasComodin++;
+        }
+        cartasSel[posCarta] = true;
         return contCartas;
     }
 
-    public void addContCartas(){
-        this.contCartas++;
-    }
-    
-    public void resetContCartas(){
-        this.contCartas = 0;
-    }
-
-    public int getCarta(int posCarta){
-        return cartas.get(posCarta);
+    public void deseleccionarCarta(int posCarta){
+        contCartas--;
+        int id = cartas.get(posCarta);
+        if(id < 3){
+            cartasClick.remove((Integer)id);
+        } else {
+            cartasComodin--;
+        }
+        cartasSel[posCarta] = false;
     }
 
     public void addCarta(int carta){
@@ -76,5 +119,8 @@ public class Jugador {
     public void removeCarta(int posCarta){
         this.cartas.remove(posCarta);
     }    
-    
+
+    public ArrayList<Integer> getCartas(){
+        return cartas;
+    }
 }

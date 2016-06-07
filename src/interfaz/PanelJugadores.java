@@ -19,7 +19,7 @@ public class PanelJugadores extends JPanel{
     private Image img;
 
     
-    public PanelJugadores(int numJugadores) {
+    public PanelJugadores(int numJugadores, Risk risk) {
         setPreferredSize(new Dimension(300, 0));
         
         //img = new ImageIcon("res/paper background.png").getImage();
@@ -37,7 +37,7 @@ public class PanelJugadores extends JPanel{
         c.anchor = GridBagConstraints.PAGE_START;
         for (int i = 0; i < numJugadores; i++) {
             c.gridy = i;
-            PanelJugador jugador = new PanelJugador(i+1);
+            PanelJugador jugador = new PanelJugador(i, risk);
             /*
             switch(i) {
             case 0:
@@ -58,6 +58,14 @@ public class PanelJugadores extends JPanel{
             //c.anchor = GridBagConstraints.CENTER;
             c.weighty *= 100;
         }
+    }
+
+    public void agregarCarta(int jugador, int carta){
+        jugadores.get(jugador).agregarCarta(carta);
+    }
+
+    public void updateTropas(int jugador){
+        jugadores.get(jugador).updateTropas();
     }
     
 //    public void paintComponent(Graphics page){

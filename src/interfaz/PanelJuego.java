@@ -73,10 +73,6 @@ public class PanelJuego extends JPanel implements MouseListener, MouseMotionList
 //        texto2 = new JLabel("y");
 //        texto2.setBounds(100, 10, 100, 20);
 //        add(texto2);
-        
-        texto3 = new JLabel("123");
-        texto3.setBounds(0, 0, 400, 20);
-        add(texto3);
 
         mapaimg = new ArrayList<>(32);
         mapa = new ArrayList<>(32);
@@ -168,7 +164,7 @@ public class PanelJuego extends JPanel implements MouseListener, MouseMotionList
         seleccionar = false;
         seleccionid = 0;
 
-        mostrarRegiones();
+        //mostrarRegiones();
     }
 
     private void mostrarRegiones(){
@@ -197,7 +193,7 @@ public class PanelJuego extends JPanel implements MouseListener, MouseMotionList
     }
 
     private void seleccionarAtaque(int dpto, int jugador){
-        msg.print("El jugador " + (jugador + 1) + " ha seleccionado " + dpto);
+        msg.print("El jugador " + (jugador + 1) + " ha seleccionado " + risk.getNombreDpto(dpto));
         if(seleccionar){
             AtacarTerritorio atacar = new AtacarTerritorio(seleccionid, dpto, 0, risk, dados);
             seleccionar = false;
@@ -246,6 +242,23 @@ public class PanelJuego extends JPanel implements MouseListener, MouseMotionList
     public void update(){
         for (int i = 0; i < 32; i++) {
             tropas.get(i).setText(risk.getTropasDpto(i) + "");
+            switch (risk.getJugadorDpto(i)){
+                case 0:
+                    cambiarColor(i, amarillo);
+                    break;
+                case 1:
+                    cambiarColor(i, azul);
+                    break;
+                case 2:
+                    cambiarColor(i, rojo);
+                    break;
+                case 3:
+                    cambiarColor(i,verde);
+                    break;
+                case 4:
+                    cambiarColor(i, gris);
+                    break;
+            }
         }
     }
 
@@ -323,6 +336,9 @@ public class PanelJuego extends JPanel implements MouseListener, MouseMotionList
             else nombreDpto.setFont(new Font("Arial", Font.PLAIN, 14));
             nombreDpto.setText(nombre);
             regionDpto.setText(region);
+        } else {
+            nombreDpto.setText("");
+            regionDpto.setText("");
         }
     }
 

@@ -22,6 +22,8 @@ public class AtacarTerritorio extends JFrame implements ActionListener{
                 risk.requestFocus();
                 if(risk.checkConquista(target, jugador)){
                     reportarConquista();
+                } else {
+                    risk.print("El jugador " + (jugador+1) + " ha cancelado el ataque");
                 }
             }
     };
@@ -38,6 +40,7 @@ public class AtacarTerritorio extends JFrame implements ActionListener{
     private int contAnim;
     private Timer ejecutar;
     private Timer esperar;
+    JButton boton;
     
     public AtacarTerritorio(int atk, int target, int jugador, Risk risk,
             ArrayList<ImageIcon> dados){
@@ -72,8 +75,8 @@ public class AtacarTerritorio extends JFrame implements ActionListener{
         esperar = new Timer(1000, this);
         esperar.setActionCommand("esperar");
         esperar.setRepeats(false);
-        
-        JButton boton = new JButton("tirar");
+
+        boton = new JButton("tirar");
         boton.addActionListener(this);
         boton.setActionCommand("tirar");
         add(boton);
@@ -83,7 +86,8 @@ public class AtacarTerritorio extends JFrame implements ActionListener{
         this.risk = risk;
 
         risk.setEnabled(false);
-        if(comprobarAtaque()) risk.print("El jugador " + (jugador+1) + " ha atacado " + target + " usando " + atk);
+        if(comprobarAtaque()) risk.print("El jugador " + (jugador+1) + " ha atacado " + risk.getNombreDpto(target)
+                + " usando " + risk.getNombreDpto(atk));
     }
 
     private boolean comprobarAtaque(){
@@ -96,7 +100,7 @@ public class AtacarTerritorio extends JFrame implements ActionListener{
             risk.requestFocus();
             JOptionPane.showMessageDialog(risk, e.getMessage(),
                     "Aviso", JOptionPane.WARNING_MESSAGE);
-            risk.print(e.getMessage());
+            risk.print("No se pudo ejecutar el ataque porque " + e.getMessage());
         }
         return false;
     }
@@ -133,6 +137,7 @@ public class AtacarTerritorio extends JFrame implements ActionListener{
                 risk.update();
             }
         } else if(e.getActionCommand().equals("tirar")){
+            boton.setEnabled(false);
             tirarDados();
         } else if (e.getActionCommand().equals("esperar")) {
             tirarDados();
@@ -147,15 +152,14 @@ public class AtacarTerritorio extends JFrame implements ActionListener{
     }
     
     private void reportarConquista(){
+        esperar.stop();
         risk.setEnabled(true);
         risk.requestFocus();
+        risk.print("El jugador " + (jugador+1) + " ha conquistado " + risk.getNombreDpto(target));
+        JOptionPane.showMessageDialog(risk, "Territorio conquistado",
+                "Felicidades", JOptionPane.INFORMATION_MESSAGE);
         MoverTropas moverTropas = new MoverTropas(atk, target, risk);
         this.dispose();
-        esperar.stop();
-
-//        JOptionPane.showMessageDialog(risk, "Territorio conquistado",
-//                "Felicidades", JOptionPane.INFORMATION_MESSAGE);
-
     }
     
     private void atacar(){

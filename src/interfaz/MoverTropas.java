@@ -56,6 +56,10 @@ public class MoverTropas extends JFrame implements ActionListener{
     public void actionPerformed(ActionEvent e) {
         int cantidad = (int) cantidadTropas.getValue();
         risk.moverTropas(idA, idB, cantidad);
+        if(cantidad > 1) risk.print("El jugador " + (risk.getJugadorDpto(idA) + 1) + " ha movido " + cantidad
+                + " tropas desde " + risk.getNombreDpto(idA) + " hasta " + risk.getNombreDpto(idB));
+        else risk.print("El jugador " + (risk.getJugadorDpto(idA) + 1) + " ha movido 1 tropa desde "
+                + risk.getNombreDpto(idA) + " hasta " + risk.getNombreDpto(idB));
         risk.update();
         risk.setEnabled(true);
         risk.requestFocus();

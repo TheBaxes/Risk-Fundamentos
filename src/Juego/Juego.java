@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package Juego;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -14,6 +15,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Locale;
 import java.util.Scanner;
+import Interfaz.Risk;
+
 /**
  *
  * @author Baxes
@@ -25,8 +28,9 @@ public class Juego {
     private int numJugadores;
     private int jugadorActual;
     private int fase;
+    private Risk risk;
 
-    public Juego(int numJugadores) throws RiskException, IOException {
+    public Juego(int numJugadores, Risk risk) throws RiskException, IOException {
         dptos = new ArrayList<>(32);
         adyacencia = new ArrayList<>(32);
         Scanner in = new Scanner(new File("res/dptos_adyacencia.txt"));
@@ -59,24 +63,26 @@ public class Juego {
         
         this.numJugadores = numJugadores;
         jugadorActual = 0;
+
+        this.risk = risk;
     }
     
     public void comprobarAtaque(int atk, int target, int jugador)
             throws RiskException {
         if(checkTerritorio(target, jugador)){
-            throw new RiskException(target + " ya le pertenece al jugador");
+            throw new RiskException(risk.getNombreDpto(target) + " ya le pertenece al jugador");
         }
         if(!checkTerritorio(atk, jugador)){
-            throw new RiskException(atk + " no pertenece al jugador");
+            throw new RiskException(risk.getNombreDpto(atk) + " no pertenece al jugador");
         }
         if(dptos.get(atk).getNumTropas() <= 1){
-            throw new RiskException(atk + " no tiene tropas suficientes para continuar");
+            throw new RiskException(risk.getNombreDpto(atk) + " no tiene tropas suficientes para continuar");
         }
         if(dptos.get(target).getNumTropas() <= 0){
-            throw new RiskException(target + " no tiene tropas para ser atacado");
+            throw new RiskException(risk.getNombreDpto(target) + " no tiene tropas para ser atacado");
         }
         if(!adyacencia.get(atk).contains(target)){
-            throw new RiskException(target + " no es adyacente a" + atk);
+            throw new RiskException(risk.getNombreDpto(target) + " no es adyacente a" + risk.getNombreDpto(atk));
         }
     }
 
@@ -111,18 +117,26 @@ public class Juego {
         return fase;
     }
 
-    public void checkInicio(){
-
+    public int seleccionarCarta(int posCarta, int jugador){
+        return jugadores.get(jugador).seleccionarCarta(posCarta);
     }
 
-    public void setTipoCartaJugador(int id, int carta){
-        jugadores.get(id).setTipoCarta(carta);
+    public void deseleccionarCarta(int posCarta, int jugador){
+        jugadores.get(jugador).deseleccionarCarta(posCarta);
     }
 
-    public int getTipoCartaJugador(int id){
-        return jugadores.get(id).getTipoCarta();
+    public boolean checkContCartas(int jugador){
+        return jugadores.get(jugador).checkContCartas();
     }
-    
+
+    public void addCarta(int jugador, int carta){
+        jugadores.get(jugador).addCarta(carta);
+    }
+
+    public ArrayList<Integer> getCartas(int jugador){
+        return jugadores.get(jugador).getCartas();
+    }
+
     public void addTropas(int dpto, int cantidad){
         dptos.get(dpto).addTropas(cantidad);
     }
