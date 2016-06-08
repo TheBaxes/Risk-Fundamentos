@@ -1,6 +1,5 @@
 package Interfaz;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -13,8 +12,8 @@ import sun.audio.*;
 import Juego.RiskException;
 
 /**
- *
- * @author Baxes
+ * Clase AtacarTerritorio
+ * @author Sebastián Patiño Barrientos
  */
 public class AtacarTerritorio extends JFrame implements ActionListener{
     private WindowListener close = new WindowAdapter(){
@@ -62,6 +61,15 @@ public class AtacarTerritorio extends JFrame implements ActionListener{
     private final Color verde = new Color(0, 225, 0);
     private final Color gris = new Color(97, 97, 97);
 
+    /**
+     * Crea una ventana para atacar un territorio
+     * @param atk Departamento atacante
+     * @param target Departamento objetivo
+     * @param jugador Jugador atacante
+     * @param risk Referencia a la clase Risk
+     * @param dados Imágenes de los dados
+     * @param territorios Imágenes de los territorios
+     */
     public AtacarTerritorio(int atk, int target, int jugador, Risk risk,
             ArrayList<ImageIcon> dados, ArrayList<BufferedImage> territorios){
         setContentPane(new JLabel(new ImageIcon("res/fondoatk.png")));
@@ -148,6 +156,10 @@ public class AtacarTerritorio extends JFrame implements ActionListener{
 
     }
 
+    /**
+     * Método que comprueba si se puede ejecutar un ataque. Muestra una ventana emergente en caso de que no.
+     * @return booleano que es verdadero si se ejecuta
+     */
     private boolean comprobarAtaque(){
         try{
             risk.comprobarAtaque(atk, target, jugador);
@@ -164,6 +176,9 @@ public class AtacarTerritorio extends JFrame implements ActionListener{
         return false;
     }
 
+    /**
+     * Reproduce un sonido de tirada de dados
+     */
     private void playDiceSound(){
         try {
         InputStream in = new FileInputStream("res/dice_sound.wav");
@@ -180,7 +195,11 @@ public class AtacarTerritorio extends JFrame implements ActionListener{
             //Mostrar error
         }
     }
-    
+
+    /**
+     * Ejecuta un evento
+     * @param e Evento
+     */
     public void actionPerformed(ActionEvent e){
         if(e.getActionCommand().equals("ejecutar")) {
             dado1 = (int)(Math.random()*6 + 1);
@@ -211,20 +230,29 @@ public class AtacarTerritorio extends JFrame implements ActionListener{
             this.dispose();
         }
     }
-    
+
+    /**
+     * Método que inicia la tirada de dados
+     */
     private void tirarDados(){
         if(comprobarAtaque()) {
             playDiceSound();
             ejecutar.start();
         }
     }
-    
+
+    /**
+     * Método que reporta si se conquistó un territorio y cambia la ventana por la de MoverTerritorio
+     */
     private void reportarConquista(){
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         esperar.stop();
         reportar.start();
     }
-    
+
+    /**
+     * Método que ejecuta un ataque
+     */
     private void atacar(){
         risk.atacar(atk, target, jugador, dado1, dado2);
         tropasA.setText(risk.getTropasDpto(atk) + "");
@@ -234,6 +262,10 @@ public class AtacarTerritorio extends JFrame implements ActionListener{
         }
     }
 
+    /**
+     * Método que cambia el color de las imágenes
+     * @param dpto id de la imagen en el ArrayList
+     */
     public void cambiarColor(int dpto){
         Color color = getColorJugador(risk.getJugadorDpto(dpto));
         BufferedImage territorio = this.territorios.get(dpto);
@@ -245,7 +277,7 @@ public class AtacarTerritorio extends JFrame implements ActionListener{
         for(int y = 0; y < territorio.getHeight(); y++)
             for(int x = 0; x < territorio.getWidth(); x++)
             {
-                if(isAlpha(territorio, x, y)) {
+                if(isBlack(territorio, x, y)) {
 
                     //mix imageColor and desired color
                     territorio.setRGB(x, y, color.getRGB());
@@ -256,6 +288,11 @@ public class AtacarTerritorio extends JFrame implements ActionListener{
         territorios.set(dpto, copiaTerritorio);
     }
 
+    /**
+     * Método que retorna el color respectivo a cada jugador
+     * @param jugador
+     * @return Objeto color
+     */
     public Color getColorJugador(int jugador){
         switch (jugador) {
             case 0:
@@ -270,7 +307,14 @@ public class AtacarTerritorio extends JFrame implements ActionListener{
         return gris;
     }
 
-    public static boolean isAlpha(BufferedImage image, int x, int y){
+    /**
+     * Método que comprueba si un pixel de una imagen es negro
+     * @param image Imagen
+     * @param x Coordenada X
+     * @param y Coordenada Y
+     * @return booleano con el resultado de la condición
+     */
+    public static boolean isBlack(BufferedImage image, int x, int y){
         return image.getRGB(x, y) == Color.BLACK.getRGB();
     }
 }
