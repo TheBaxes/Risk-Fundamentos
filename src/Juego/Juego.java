@@ -5,15 +5,11 @@
  */
 package Juego;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.Locale;
 import java.util.Scanner;
 import Interfaz.Risk;
 
@@ -26,6 +22,13 @@ public class Juego {
     private ArrayList<Departamento> dptos;
     private ArrayList<Jugador> jugadores;
     private ArrayList<Departamento> dptosNeutros;
+
+    private int insular;
+    private ArrayList<Integer> caribe;
+    private ArrayList<Integer> andina;
+    private ArrayList<Integer> pacifica;
+    private ArrayList<Integer> orinoquia;
+    private ArrayList<Integer> amazonica;
     private int selectedDptos;
     private int numJugadores;
     private int jugadorActual;
@@ -39,6 +42,13 @@ public class Juego {
         Scanner nombre = new Scanner(Paths.get("res/dptos_nombres.txt"), StandardCharsets.ISO_8859_1.name());
         Scanner region = new Scanner(Paths.get("res/dptos_regiones.txt"), StandardCharsets.ISO_8859_1.name());
         String line;
+
+        insular = 0;
+        caribe = new ArrayList<>();
+        andina = new ArrayList<>();
+        pacifica = new ArrayList<>();
+        orinoquia = new ArrayList<>();
+        amazonica = new ArrayList<>();
         for (int i = 0; i < 32; i++) {
             line = in.nextLine();
             Scanner lineRead = new Scanner(line);
@@ -55,7 +65,28 @@ public class Juego {
             }
             adyacencia.add(dptoAdyacentes);
 
-            dptos.add(new Departamento(i, nombre.nextLine().substring(1), region.nextLine().substring(1)));
+            String regionNombre = region.nextLine().substring(1);
+            dptos.add(new Departamento(i, nombre.nextLine().substring(1), regionNombre));
+            switch (regionNombre){
+                case "Insular":
+                    insular = i;
+                    break;
+                case "Caribe":
+                    caribe.add(i);
+                    break;
+                case "Andina":
+                    andina.add(i);
+                    break;
+                case "Pacífica":
+                    pacifica.add(i);
+                    break;
+                case "Orinoquía":
+                    orinoquia.add(i);
+                    break;
+                case "Amazónica":
+                    amazonica.add(i);
+                    break;
+            }
         }
 
         dptosNeutros = new ArrayList<>(dptos);
@@ -74,9 +105,11 @@ public class Juego {
     public boolean seleccionTerritorio(int dpto){
         if(getDpto(dpto)[0] != -1) return false;
         setJugador(dpto, jugadorActual);
-        addTropas(dpto, 1);
+        addTropasDpto(dpto, 1);
+        jugadores.get(jugadorActual).addDptos();
         risk.update(dpto);
         selectedDptos++;
+        risk.print("El jugador " + (jugadorActual + 1) + " ha seleccionado " + risk.getNombreDpto(dpto));
         if(numJugadores == 1) {
             for (int i = 0; i < dptosNeutros.size(); i++) {
                 if(dptosNeutros.get(i).getId() == dpto) dptosNeutros.remove(i);
@@ -85,8 +118,7 @@ public class Juego {
                 randomEmptyDpto();
             }
         }
-        risk.print("El jugador " + (jugadorActual + 1) + " ha seleccionado " + risk.getNombreDpto(dpto));
-        risk.siguienteJugador();
+        risk.siguienteJugadorInicio();
         return true;
     }
 
@@ -94,7 +126,7 @@ public class Juego {
         int selection = (int)(Math.random()*dptosNeutros.size());
         int dptoRandom = dptosNeutros.get(selection).getId();
         setJugador(dptoRandom, 4);
-        addTropas(dptoRandom, 1);
+        addTropasDpto(dptoRandom, 1);
         dptosNeutros.remove(selection);
         risk.update(dptoRandom);
         selectedDptos++;
@@ -114,8 +146,7 @@ public class Juego {
         return fase;
     }
 
-    public void comprobarAtaque(int atk, int target, int jugador)
-            throws RiskException {
+    public void comprobarAtaque(int atk, int target, int jugador) throws RiskException {
         if(checkTerritorio(target, jugador)){
             throw new RiskException(risk.getNombreDpto(target) + " ya le pertenece al jugador");
         }
@@ -133,37 +164,85 @@ public class Juego {
         }
     }
 
+    public void comprobarTransporte(int dptoA, int dptoB, int jugador) throws RiskException{
+        if (getDpto(dptoA)[0] != jugador){
+            throw new RiskException(risk.getNombreDpto(dptoA) + " no le pertenece al jugador");
+        }
+        if (getDpto(dptoB)[0] != jugador){
+            throw new RiskException(risk.getNombreDpto(dptoB) + " no le pertenece al jugador");
+        }
+    }
+
     public boolean checkTerritorio(int dpto, int jugador){
         return jugador == dptos.get(dpto).getIdJugador();
     }
     
     public void atacar(int atk, int target, int jugador, int dado1, int dado2){
         if(dado1 > dado2){
-            reduceTropas(target, 1);
+            reduceTropasDpto(target, 1);
         } else {
-            reduceTropas(atk, 1);
+            reduceTropasDpto(atk, 1);
         }
     }
 
     public boolean checkConquista(int target, int jugador){
         if (dptos.get(target).getNumTropas() == 0){
+            jugadores.get(dptos.get(target).getIdJugador()).removeDptos();
             dptos.get(target).setIdJugador(jugador);
+            jugadores.get(jugador).addDptos();
             return true;
         }
         return false;
     }
 
     public void moverTropas(int idA, int idB, int cantidad){
-        addTropas(idB, cantidad);
-        reduceTropas(idA, cantidad);
+        addTropasDpto(idB, cantidad);
+        reduceTropasDpto(idA, cantidad);
     }
 
-    public int comprobarVictoria(){
-        int jugador = getDpto(0)[0];
-        for (int i = 1; i < 32; i++) {
+    public boolean[] comprobarRegiones(int jugador){
+        boolean[] territorios = new boolean[6];
+        if(getDpto(insular)[0] != jugador) territorios[0] = true;
+        territorios[0] = !territorios[0];
+        for (Integer dpto: caribe){
+            if(getDpto(dpto)[0] != jugador) territorios[1] = true;
+        }
+        territorios[1] = !territorios[1];
+        for (Integer dpto: andina){
+            if(getDpto(dpto)[0] != jugador) territorios[2] = true;
+        }
+        territorios[2] = !territorios[2];
+        for (Integer dpto: pacifica){
+            if(getDpto(dpto)[0] != jugador) territorios[3] = true;
+        }
+        territorios[3] = !territorios[3];
+        for (Integer dpto: orinoquia){
+            if(getDpto(dpto)[0] != jugador) territorios[4] = true;
+        }
+        territorios[4] = !territorios[4];
+        for (Integer dpto: amazonica){
+            if(getDpto(dpto)[0] != jugador) territorios[5] = true;
+        }
+        territorios[5] = !territorios[5];
+        return territorios;
+    }
+
+    public int comprobarVictoria(int jugador){
+        risk.comprobarJugadores();
+        boolean[] jugadoresR = risk.getJugadoresRemovidos();
+        int cont = 0;
+        for (int i = 0; i <= numJugadores; i++) {
+            if(jugadoresR[i]) cont++;
+        }
+        if(cont == numJugadores) return jugador + 1;
+        for (int i = 0; i < 32; i++) {
             if(getDpto(i)[0] != jugador) return -1;
         }
         return jugador + 1;
+    }
+
+    public boolean comprobarJugador(int jugador){
+        return jugadores.get(jugador).getDptos() == 0;
     }
 
     public int seleccionarCarta(int posCarta, int jugador){
@@ -190,11 +269,19 @@ public class Juego {
         return jugadores.get(jugador).getTropas();
     }
 
-    public void addTropas(int dpto, int cantidad){
+    public void addTropasJugador(int jugador, int cantidad){
+        jugadores.get(jugador).addTropas(cantidad);
+    }
+
+    public void reduceTropasJugador(int jugador, int cantidad){
+        jugadores.get(jugador).removeTropas(cantidad);
+    }
+
+    public void addTropasDpto(int dpto, int cantidad){
         dptos.get(dpto).addTropas(cantidad);
     }
     
-    public void reduceTropas(int dpto, int cantidad){
+    public void reduceTropasDpto(int dpto, int cantidad){
         dptos.get(dpto).reduceTropas(cantidad);
     }
     

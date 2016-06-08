@@ -72,6 +72,7 @@ public class PanelCartas extends JPanel{
         cartas.add(boton);
         add(boton, c);
         c.weightx *= 50;
+        risk.repaint();
     }
 
     public void update(){
@@ -98,6 +99,7 @@ public class PanelCartas extends JPanel{
             int condicion = risk.seleccionarCarta(id, numJugador);
             if(condicion == 3) {
                 if(risk.checkContCartas(numJugador)){
+                    risk.print("El jugador " + (numJugador + 1) + " ha usado 3 cartas y ha obtenido 7 tropas extras");
                     update();
                 }
                 for (int i = 0; i < 5; i++) {
@@ -108,7 +110,6 @@ public class PanelCartas extends JPanel{
             }
         }
         risk.repaint();
-        System.out.println("Carta nº" + id + " del jugador " + numJugador + " es " + cartasclick[id]);
     }
     
     public void paintComponent(Graphics page){

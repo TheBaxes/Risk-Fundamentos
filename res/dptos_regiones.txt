@@ -24,9 +24,9 @@
 24 Andina
 25 Orinoquía
 26 Orinoquía
-27 Amazonia
-28 Amazonia
-29 Amazonia
-30 Amazonia
-31 Amazonia
-32 Amazonia
+27 Amazónica
+28 Amazónica
+29 Amazónica
+30 Amazónica
+31 Amazónica
+32 Amazónica

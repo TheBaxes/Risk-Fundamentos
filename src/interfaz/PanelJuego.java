@@ -5,6 +5,8 @@
  */
 package Interfaz;
 
+import Juego.RiskException;
+
 import java.awt.image.BufferedImage;
 import java.io.*;
 import javax.imageio.ImageIO;
@@ -32,7 +34,6 @@ public class PanelJuego extends JPanel implements MouseListener, MouseMotionList
     private final Color azul = new Color(8, 155, 255);
     private final Color rojo = new Color(212, 28, 28);
     private final Color verde = new Color(0, 225, 0);
-    private final Color verdeSelect = new Color(3, 255, 89);
     private final Color gris = new Color(97, 97, 97);
     private final Color select = new Color(255, 138, 0);
     private final Color blanco = new Color(255, 255, 255);
@@ -42,6 +43,7 @@ public class PanelJuego extends JPanel implements MouseListener, MouseMotionList
     private ArrayList<JLabel> mapa;
     private ArrayList<ArrayList<Integer>> checkboxes;
     private ArrayList<JLabel> tropas;
+    private ArrayList<BufferedImage> mapaSmall;
 
     private ArrayList<ImageIcon> faseimg;
     private JLabel fase;
@@ -77,6 +79,7 @@ public class PanelJuego extends JPanel implements MouseListener, MouseMotionList
         mapaimg = new ArrayList<>(32);
         mapa = new ArrayList<>(32);
         tropas = new ArrayList<>(32);
+        mapaSmall = new ArrayList<>(32);
 
         try {
             fondoimg = ImageIO.read(new File("res/mapa/fondo.png"));
@@ -85,12 +88,16 @@ public class PanelJuego extends JPanel implements MouseListener, MouseMotionList
             //add(fondo);
             for (int i = 1; i <= 32; i++) {
                 BufferedImage imagen;
+                BufferedImage imagen2;
                 if(i < 10) {
+                    imagen2 = ImageIO.read(new File("res/mapa/small0" + i + ".png"));
                     imagen = ImageIO.read(new File("res/mapa/0" + i + ".png"));
                 } else {
+                    imagen2 = ImageIO.read(new File("res/mapa/small" + i + ".png"));
                     imagen = ImageIO.read(new File("res/mapa/" + i + ".png"));
                 }
                 mapaimg.add(imagen);
+                mapaSmall.add(imagen2);
                 JLabel dibujo = new JLabel(new ImageIcon(imagen));
                 dibujo.setBounds(0, 0, 717, 670);
                 mapa.add(dibujo);
@@ -133,7 +140,7 @@ public class PanelJuego extends JPanel implements MouseListener, MouseMotionList
             fase.setBounds(456, 142, 200, 33);
             add(fase);
         } catch(IOException e){
-            JOptionPane.showMessageDialog(this, "Error", "Error al leer archivos del juego",
+            JOptionPane.showMessageDialog(risk, "Error", "Error al leer archivos del juego",
                     JOptionPane.WARNING_MESSAGE);
         }
 
@@ -201,21 +208,43 @@ public class PanelJuego extends JPanel implements MouseListener, MouseMotionList
             msg.print("El jugador " + (jugador + 1) + " ha deseleccionado " + risk.getNombreDpto(dpto));
             return;
         }
-        cambiarColorClick(dpto, true);
         if (seleccionar) {
             switch (fase) {
                 case 0:
                     risk.seleccionarTerritorio(dpto);
-                    cambiarColorClick(dpto,false);
                     break;
                 case 1:
-                    msg.print("El jugador " + (jugador + 1) + " ha seleccionado " + risk.getNombreDpto(dpto));
+                    try {
+                        if(risk.getTropasJugador(jugador) > 0) {
+                            risk.addTropasDpto(dpto, 1);
+                            risk.reduceTropasJugador(jugador, 1);
+                            msg.print("El jugador " + (jugador + 1) + " ha agregado 1 tropa a " +
+                                    risk.getNombreDpto(dpto));
+                        } else {
+                            JOptionPane.showMessageDialog(risk, "El jugador " + (jugador + 1)  + " no tiene más" +
+                                    " tropas para ubicar", "Aviso", JOptionPane.WARNING_MESSAGE);
+                        }
+                    } catch (RiskException ex) {
+                        JOptionPane.showMessageDialog(risk, ex.getMessage(), "Aviso",
+                                JOptionPane.WARNING_MESSAGE);
+                    }
                     break;
                 case 2:
-                    new AtacarTerritorio(seleccionid, dpto, 0, risk, dados);
+                    cambiarColorClick(dpto, true);
+                    new AtacarTerritorio(seleccionid, dpto, jugador, risk, dados, mapaSmall);
                     msg.print("El jugador " + (jugador + 1) + " ha seleccionado " + risk.getNombreDpto(dpto));
                     break;
                 case 3:
+                    cambiarColorClick(dpto, true);
+                    try {
+                        risk.comprobarTransporte(seleccionid, dpto, jugador);
+                        new MoverTropas(seleccionid, dpto, risk, false);
+                    } catch (RiskException e){
+                        JOptionPane.showMessageDialog(risk, e.getMessage(),
+                                "Aviso", JOptionPane.WARNING_MESSAGE);
+                        risk.update(seleccionid, dpto, false);
+                        risk.print("No se pudieron mover las tropas porque " + e.getMessage());
+                    }
                     break;
             }
             seleccionar = false;
@@ -223,18 +252,19 @@ public class PanelJuego extends JPanel implements MouseListener, MouseMotionList
         } else {
             if(!risk.checkTerritorio(dpto, jugador) && fase > 0){
                 msg.print("El territorio seleccionado no pertenece al jugador");
-                cambiarColorClick(dpto, false);
                 return;
             }
             if(risk.getTropasDpto(dpto) <= 1 && fase == 2){
                 msg.print("El territorio seleccionado no tiene suficientes tropas para atacar");
-                cambiarColorClick(dpto, false);
                 return;
             }
             seleccionid = dpto;
             seleccionar = true;
             if(fase <= 1) seleccionar(dpto, jugador, fase);
-            else msg.print("El jugador " + (jugador + 1) + " ha seleccionado " + risk.getNombreDpto(dpto));
+            else {
+                msg.print("El jugador " + (jugador + 1) + " ha seleccionado " + risk.getNombreDpto(dpto));
+                cambiarColorClick(dpto, true);
+            }
         }
     }
 
@@ -300,6 +330,10 @@ public class PanelJuego extends JPanel implements MouseListener, MouseMotionList
         }
     }
 
+    public void updateTropas(int dpto){
+        tropas.get(dpto).setText(risk.getTropasDpto(dpto) + "");
+    }
+
     public void update(int dpto){
         tropas.get(dpto).setText(risk.getTropasDpto(dpto) + "");
         cambiarColor(dpto, getColorJugador(risk.getJugadorDpto(dpto)));
@@ -325,22 +359,6 @@ public class PanelJuego extends JPanel implements MouseListener, MouseMotionList
 
         int dpto = checkDpto(x, y);
         if(dpto > -1) seleccionar(dpto, jugadorActual, faseActual);
-
-
-//        for(ArrayList<Integer> check: checkboxes){
-//            if(x >= check.get(1) && x < check.get(3) && y >= check.get(2) && y < check.get(4)){
-//                seleccionarAtaque(check.get(0));
-//
-//                //test
-//                if(test.get(check.get(0))) {
-//                    cambiarColor(check.get(0), verde);
-//                } else {
-//                        cambiarColor(check.get(0), verdeSelect);
-//                }
-//                test.set(check.get(0), !test.get(check.get(0)));
-//                break;
-//            }
-//        }
     }
 
     public static boolean isAlpha(BufferedImage image, int x, int y){

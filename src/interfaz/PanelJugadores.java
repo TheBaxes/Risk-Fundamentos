@@ -46,8 +46,10 @@ public class PanelJugadores extends JPanel{
             c.insets = new Insets(5, 13, 8, 0);
         }
 
-        siguiente = new JButton("");
+        siguiente = new JButton("Siguiente jugador");
         siguiente.setEnabled(false);
+        siguiente.addActionListener(risk);
+        siguiente.setActionCommand("siguiente");
         GridBagConstraints d = new GridBagConstraints();
         d.gridy = 4;
         d.fill = GridBagConstraints.NONE;
@@ -57,6 +59,11 @@ public class PanelJugadores extends JPanel{
 
     public void cambiarBoton(String texto){
         siguiente.setText(texto);
+        siguiente.setEnabled(true);
+    }
+
+    public void removerJugador(int jugador){
+        getComponent(jugador).setVisible(false);
     }
 
     public void agregarCarta(int jugador, int carta){

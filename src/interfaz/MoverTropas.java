@@ -1,5 +1,7 @@
 package Interfaz;
 
+import Juego.RiskException;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -8,12 +10,26 @@ import java.awt.event.*;
  * Created by Sebastian Patiño Barrientos.
  */
 public class MoverTropas extends JFrame implements ActionListener{
+    private WindowListener close = new WindowAdapter(){
+        public void windowClosing(WindowEvent evt) {
+            if(!conquista) {
+                for (int i = 0; i < tropas; i++) {
+                    tropas--;
+                    risk.moverTropas(idB, idA, 1);
+                }
+                risk.setEnabled(true);
+                risk.requestFocus();
+                dispose();
+            }
+        }
+    };
+
     private int idA;
     private int tropasA;
     private int idB;
     private int tropasB;
+    private boolean conquista;
     private Risk risk;
-    private JSpinner cantidadTropas;
     private JButton seleccionar;
 
     private JButton menos;
@@ -21,14 +37,15 @@ public class MoverTropas extends JFrame implements ActionListener{
     private JButton mas;
     Timer adicionar;
     private int tropas;
-    private JLabel cantidadDeTropas;
+    private JLabel cantidadTropas;
 
-    public MoverTropas(int idA, int idB, Risk risk){
+    public MoverTropas(int idA, int idB, Risk risk, boolean conquista){
         setTitle("Mover tropas");
         setSize(300, 200);
         setResizable(false);
         setLocationRelativeTo(risk);
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+        addWindowListener(close);
         this.risk = risk;
 
         this.idA = idA;
@@ -36,6 +53,8 @@ public class MoverTropas extends JFrame implements ActionListener{
         this.idB = idB;
         tropasB = risk.getTropasDpto(idB);
         risk.setEnabled(false);
+
+        this.conquista = conquista;
 
         menos = new JButton("<");
         menos.addActionListener(this);
@@ -70,8 +89,8 @@ public class MoverTropas extends JFrame implements ActionListener{
             }
         });
         tropas = tropasA - 1;
-        cantidadDeTropas = new JLabel(tropas + "");
-        cantidadDeTropas.setFont(new Font("Arial", Font.PLAIN, 14));
+        cantidadTropas = new JLabel(tropas + "");
+        cantidadTropas.setFont(new Font("Arial", Font.PLAIN, 14));
         risk.moverTropas(idA, idB, tropas);
         risk.update(idA, idB);
 
@@ -96,7 +115,7 @@ public class MoverTropas extends JFrame implements ActionListener{
 
         c.insets = new Insets(0, 5, 0, 5);
         c.gridx = 1;
-        add(cantidadDeTropas, c);
+        add(cantidadTropas, c);
 
         c.insets = new Insets(0, 5, 0, 0);
         c.gridx = 2;
@@ -140,9 +159,10 @@ public class MoverTropas extends JFrame implements ActionListener{
                 risk.print("El jugador " + (risk.getJugadorDpto(idA) + 1) + " ha movido " + tropas
                 + " tropa" + plural + " desde " + risk.getNombreDpto(idA) + " hasta " + risk.getNombreDpto(idB));
                 risk.update(idA, idB, false);
+                if(!conquista) risk.actionPerformed(new ActionEvent(this, 0, ""));
                 break;
         }
-        cantidadDeTropas.setText(tropas + "");
+        cantidadTropas.setText(tropas + "");
         risk.update(idA, idB);
     }
 

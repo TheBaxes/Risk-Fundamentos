@@ -20,6 +20,7 @@ public class Jugador{
     private boolean[] cartasSel;
     private ArrayList<Integer> cartasClick;
     private int cartasComodin;
+    private int dptos;
     
     public Jugador(int idJugador){
         this.id = idJugador;
@@ -27,6 +28,7 @@ public class Jugador{
         cartas = new ArrayList<>(5);
         cartasSel = new boolean[5];
         cartasClick = new ArrayList<>(5);
+        dptos = 0;
     }
 
     public int getId(){
@@ -41,11 +43,8 @@ public class Jugador{
         this.tropas += tropas;
     }
     
-    public void removeTropas(int tropas) throws RiskException{
+    public void removeTropas(int tropas){
         this.tropas -= tropas;
-        if(this.tropas < 0){
-            throw new RiskException("Tropas negativas");
-        }
     }
     
     public boolean checkContCartas(){
@@ -104,12 +103,20 @@ public class Jugador{
     public void addCarta(int carta){
         this.cartas.add(carta);
     }
-    
-    public void removeCarta(int posCarta){
-        this.cartas.remove(posCarta);
-    }    
 
     public ArrayList<Integer> getCartas(){
         return cartas;
+    }
+
+    public void addDptos(){
+        dptos++;
+    }
+
+    public void removeDptos(){
+        dptos--;
+    }
+
+    public int getDptos(){
+        return dptos;
     }
 }

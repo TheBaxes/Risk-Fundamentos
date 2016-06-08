@@ -37,7 +37,8 @@ public class MenuPrincipal extends JFrame {
     }
     
     public void abrirJuego(int jugadores){
-        Risk risk = new Risk(jugadores);
         this.setVisible(false);
+        Risk risk = new Risk(jugadores);
+        this.dispose();
     }
 }
