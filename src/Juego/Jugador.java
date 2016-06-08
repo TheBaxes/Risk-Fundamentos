@@ -12,7 +12,7 @@ import java.util.ArrayList;
  *
  * @author Baxes
  */
-public class Jugador {
+public class Jugador{
     private final int id;
     private int tropas;
     private int contCartas;
@@ -49,23 +49,7 @@ public class Jugador {
     }
     
     public boolean checkContCartas(){
-        contCartas = 0;
         boolean check = false;
-//        if ((checkCartas[0] >= 1 && checkCartas[1] >= 1 && checkCartas[2] >= 1) ||
-//                (checkCartas[0] == 3 || checkCartas[1] == 3 || checkCartas[2] == 3)){
-//            for (int i = 0; i < 3; i++) {
-//                checkCartas[i] = 0;
-//            }
-//            int remove = 0;
-//            for (int i = 0; i < 5; i++) {
-//                if(cartasSel[i]){
-//                    cartasSel[i] = false;
-//                    cartas.remove(i - remove);
-//                    remove++;
-//                }
-//            }
-//            return true;
-//        }
         if (cartasComodin == 0) {
             if ((cartasClick.get(0) == cartasClick.get(1) && cartasClick.get(1) == cartasClick.get(2)
                     && cartasClick.get(2) == cartasClick.get(0))) {
@@ -77,14 +61,19 @@ public class Jugador {
         } else {
             check = true;
         }
-        cartasClick.clear();
-        int remove = 0;
-        for (int i = 0; i < 5; i++) {
-            if(cartasSel[i]){
-                cartasSel[i] = false;
-                cartas.remove(i - remove);
-                remove++;
+
+        if(check){
+            contCartas = 0;
+            addTropas(7);
+            int remove = 0;
+            for (int i = 0; i < 5; i++) {
+                if(cartasSel[i]){
+                    cartasSel[i] = false;
+                    cartas.remove(i - remove);
+                    remove++;
+                }
             }
+            cartasClick.clear();
         }
         return check;
     }

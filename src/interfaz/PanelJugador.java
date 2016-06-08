@@ -16,15 +16,15 @@ import java.awt.*;
 public class PanelJugador extends JPanel{
     private JLabel tropas;
     private PanelCartas cartas;
-    private int idJugador;
+    private int jugador;
     private Image img;
     private Risk risk;
     
-    public PanelJugador(int numJugador, Risk risk){
-        idJugador = numJugador;
+    public PanelJugador(int jugador, Risk risk){
+        this.jugador = jugador;
         setPreferredSize(new Dimension(280, 120));
         
-        img = new ImageIcon("res/back.png").getImage();
+        img = new ImageIcon("res/fondojugador" + (jugador + 1) + ".png").getImage();
         
         //TitledBorder border = new 
         //LineBorder border = new LineBorder(Color.yellow, 2, true);
@@ -35,7 +35,7 @@ public class PanelJugador extends JPanel{
 //        TitledBorder.ABOVE_BOTTOM, font, Color.RED);
     
         TitledBorder border = BorderFactory.createTitledBorder(
-                new LineBorder(Color.yellow, 0), "Jugador "+ (numJugador + 1));
+                new LineBorder(Color.yellow, 0), "Jugador "+ (jugador + 1));
         setBorder(border);
         
         setLayout(new GridBagLayout());
@@ -53,8 +53,11 @@ public class PanelJugador extends JPanel{
         c.anchor = GridBagConstraints.CENTER;
         c.fill = GridBagConstraints.HORIZONTAL;
         //c.weightx = 0.000001;
-        cartas = new PanelCartas(numJugador, risk);
+        cartas = new PanelCartas(jugador, risk);
+        cartas.setPreferredSize(new Dimension(200, 41));
         add(cartas, c);
+
+        this.risk = risk;
     }
 
     public void agregarCarta(int carta){
@@ -62,7 +65,7 @@ public class PanelJugador extends JPanel{
     }
 
     public void updateTropas(){
-        tropas.setText("asdf");
+        tropas.setText("Tropas disponibles: " + risk.getTropasJugador(jugador));
     }
 
     public void updateInfo(int num){

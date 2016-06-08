@@ -25,6 +25,8 @@ public class Juego {
     private ArrayList<ArrayList<Integer>> adyacencia;
     private ArrayList<Departamento> dptos;
     private ArrayList<Jugador> jugadores;
+    private ArrayList<Departamento> dptosNeutros;
+    private int selectedDptos;
     private int numJugadores;
     private int jugadorActual;
     private int fase;
@@ -56,17 +58,62 @@ public class Juego {
             dptos.add(new Departamento(i, nombre.nextLine().substring(1), region.nextLine().substring(1)));
         }
 
+        dptosNeutros = new ArrayList<>(dptos);
+
         jugadores = new ArrayList<>(numJugadores);
         for (int i = 0; i < numJugadores; i++) {
             jugadores.add(new Jugador(i));
         }
         
-        this.numJugadores = numJugadores;
+        this.numJugadores = numJugadores - 1;
         jugadorActual = 0;
 
         this.risk = risk;
     }
-    
+
+    public boolean seleccionTerritorio(int dpto){
+        if(getDpto(dpto)[0] != -1) return false;
+        setJugador(dpto, jugadorActual);
+        addTropas(dpto, 1);
+        risk.update(dpto);
+        selectedDptos++;
+        if(numJugadores == 1) {
+            for (int i = 0; i < dptosNeutros.size(); i++) {
+                if(dptosNeutros.get(i).getId() == dpto) dptosNeutros.remove(i);
+            }
+            if(jugadorActual == 1 && selectedDptos < 32){
+                randomEmptyDpto();
+            }
+        }
+        risk.print("El jugador " + (jugadorActual + 1) + " ha seleccionado " + risk.getNombreDpto(dpto));
+        risk.siguienteJugador();
+        return true;
+    }
+
+    public void randomEmptyDpto(){
+        int selection = (int)(Math.random()*dptosNeutros.size());
+        int dptoRandom = dptosNeutros.get(selection).getId();
+        setJugador(dptoRandom, 4);
+        addTropas(dptoRandom, 1);
+        dptosNeutros.remove(selection);
+        risk.update(dptoRandom);
+        selectedDptos++;
+    }
+
+    public int siguienteJugador(){
+        if(jugadorActual >= numJugadores) jugadorActual = 0;
+        else jugadorActual++;
+        return jugadorActual;
+    }
+
+    public int cambiarFase(){
+        if (fase == 0) {
+            if (selectedDptos == 32) fase = 1;
+        } else fase++;
+        if(fase == 4) fase = 1;
+        return fase;
+    }
+
     public void comprobarAtaque(int atk, int target, int jugador)
             throws RiskException {
         if(checkTerritorio(target, jugador)){
@@ -82,7 +129,7 @@ public class Juego {
             throw new RiskException(risk.getNombreDpto(target) + " no tiene tropas para ser atacado");
         }
         if(!adyacencia.get(atk).contains(target)){
-            throw new RiskException(risk.getNombreDpto(target) + " no es adyacente a" + risk.getNombreDpto(atk));
+            throw new RiskException(risk.getNombreDpto(target) + " no es adyacente a " + risk.getNombreDpto(atk));
         }
     }
 
@@ -111,10 +158,12 @@ public class Juego {
         reduceTropas(idA, cantidad);
     }
 
-    public int cambiarFase(){
-        fase++;
-        if(fase == 4) fase = 1;
-        return fase;
+    public int comprobarVictoria(){
+        int jugador = getDpto(0)[0];
+        for (int i = 1; i < 32; i++) {
+            if(getDpto(i)[0] != jugador) return -1;
+        }
+        return jugador + 1;
     }
 
     public int seleccionarCarta(int posCarta, int jugador){
@@ -133,8 +182,12 @@ public class Juego {
         jugadores.get(jugador).addCarta(carta);
     }
 
-    public ArrayList<Integer> getCartas(int jugador){
+    public ArrayList<Integer> getCartasJugador(int jugador){
         return jugadores.get(jugador).getCartas();
+    }
+
+    public int getTropasJugador(int jugador){
+        return jugadores.get(jugador).getTropas();
     }
 
     public void addTropas(int dpto, int cantidad){
@@ -178,16 +231,8 @@ public class Juego {
         return numJugadores;
     }
 
-    public void setNumJugadores(int numJugadores){
-        this.numJugadores = numJugadores;
-    }
-
     public int getJugadorActual(){
         return jugadorActual;
-    }
-
-    public void setJugadorActual(int jugadorActual){
-        this.jugadorActual = jugadorActual;
     }
     
     

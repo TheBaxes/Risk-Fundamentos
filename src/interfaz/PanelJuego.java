@@ -14,14 +14,14 @@ import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+//REMOVER
+
+
 /**
  *
  * @author Baxes
  */
 public class PanelJuego extends JPanel implements MouseListener, MouseMotionListener{
-    private JLabel texto1;
-    private JLabel texto2;
-    private JLabel texto3;
     private ArrayList<Boolean> test;
 
     private Risk risk;
@@ -29,14 +29,12 @@ public class PanelJuego extends JPanel implements MouseListener, MouseMotionList
     private Msgbox msg;
 
     private final Color amarillo = new Color(240, 240, 0);
-    private final Color amarilloSelect = new Color(255, 217, 39);
-    private final Color azul = new Color(0, 0, 255);
-    private final Color azulSelect = new Color(26, 119, 255);
-    private final Color rojo = new Color(225, 0, 0);
-    private final Color rojoSelect = new Color(255, 74, 6);
+    private final Color azul = new Color(8, 155, 255);
+    private final Color rojo = new Color(212, 28, 28);
     private final Color verde = new Color(0, 225, 0);
     private final Color verdeSelect = new Color(3, 255, 89);
     private final Color gris = new Color(97, 97, 97);
+    private final Color select = new Color(255, 138, 0);
     private final Color blanco = new Color(255, 255, 255);
 
     private ArrayList<ImageIcon> dados;
@@ -53,6 +51,8 @@ public class PanelJuego extends JPanel implements MouseListener, MouseMotionList
 
     private boolean seleccionar;
     private int seleccionid;
+    private int faseActual;
+    private int jugadorActual;
 
     public PanelJuego(Risk risk) {
         //setPreferredSize(new Dimension(700, 600));
@@ -162,13 +162,14 @@ public class PanelJuego extends JPanel implements MouseListener, MouseMotionList
             test.add(true);
         }
         seleccionar = false;
-        seleccionid = 0;
-
-        //mostrarRegiones();
+        seleccionid = -1;
+        faseActual = 0;
+        jugadorActual = 0;
     }
 
-    private void mostrarRegiones(){
+    public void mostrarRegiones(){
         for (int i = 0; i < 32; i++) {
+            tropas.get(i).setText("");
             switch (risk.getRegionDpto(i)){
                 case "Insular":
                     cambiarColor(i, Color.magenta);
@@ -186,28 +187,54 @@ public class PanelJuego extends JPanel implements MouseListener, MouseMotionList
                     cambiarColor(i, verde);
                     break;
                 case "Amazonia":
-                    cambiarColor(i, verdeSelect);
+                    cambiarColor(i, Color.orange);
                     break;
             }
         }
     }
 
-    private void seleccionarAtaque(int dpto, int jugador){
-        msg.print("El jugador " + (jugador + 1) + " ha seleccionado " + risk.getNombreDpto(dpto));
-        if(seleccionar){
-            AtacarTerritorio atacar = new AtacarTerritorio(seleccionid, dpto, 0, risk, dados);
+    public void seleccionar(int dpto, int jugador, int fase){
+        if(seleccionid == dpto && fase > 1) {
             seleccionar = false;
+            seleccionid = -1;
+            cambiarColorClick(dpto, false);
+            msg.print("El jugador " + (jugador + 1) + " ha deseleccionado " + risk.getNombreDpto(dpto));
+            return;
+        }
+        cambiarColorClick(dpto, true);
+        if (seleccionar) {
+            switch (fase) {
+                case 0:
+                    risk.seleccionarTerritorio(dpto);
+                    cambiarColorClick(dpto,false);
+                    break;
+                case 1:
+                    msg.print("El jugador " + (jugador + 1) + " ha seleccionado " + risk.getNombreDpto(dpto));
+                    break;
+                case 2:
+                    new AtacarTerritorio(seleccionid, dpto, 0, risk, dados);
+                    msg.print("El jugador " + (jugador + 1) + " ha seleccionado " + risk.getNombreDpto(dpto));
+                    break;
+                case 3:
+                    break;
+            }
+            seleccionar = false;
+            seleccionid = -1;
         } else {
-            if(!risk.checkTerritorio(dpto, jugador)){
+            if(!risk.checkTerritorio(dpto, jugador) && fase > 0){
                 msg.print("El territorio seleccionado no pertenece al jugador");
+                cambiarColorClick(dpto, false);
                 return;
             }
-            if(risk.getTropasDpto(dpto) <= 1){
+            if(risk.getTropasDpto(dpto) <= 1 && fase == 2){
                 msg.print("El territorio seleccionado no tiene suficientes tropas para atacar");
+                cambiarColorClick(dpto, false);
                 return;
             }
             seleccionid = dpto;
             seleccionar = true;
+            if(fase <= 1) seleccionar(dpto, jugador, fase);
+            else msg.print("El jugador " + (jugador + 1) + " ha seleccionado " + risk.getNombreDpto(dpto));
         }
     }
 
@@ -226,8 +253,35 @@ public class PanelJuego extends JPanel implements MouseListener, MouseMotionList
         repaint();
     }
 
-    public void cambiarFase(){
-        fase.setIcon(faseimg.get(risk.cambiarFase()));
+    public void cambiarColorClick(int dpto, boolean clickeado){
+        if (clickeado) cambiarColor(dpto, select);
+        else cambiarColor(dpto, getColorJugador(risk.getJugadorDpto(dpto)));
+    }
+
+    public Color getColorJugador(int jugador){
+        switch (jugador) {
+            case 0:
+                return amarillo;
+            case 1:
+                return azul;
+            case 2:
+                return rojo;
+            case 3:
+                return verde;
+            case 4:
+                return gris;
+        }
+        return blanco;
+    }
+
+    public void cambiarFase(int fase){
+        this.fase.setIcon(faseimg.get(fase));
+        faseActual = fase;
+    }
+
+    public void cambiarJugador(int jugador){
+        jugadorActual = jugador;
+        risk.print("Turno del jugador " + (jugador + 1));
     }
 
     public int checkDpto(int x, int y){
@@ -242,24 +296,25 @@ public class PanelJuego extends JPanel implements MouseListener, MouseMotionList
     public void update(){
         for (int i = 0; i < 32; i++) {
             tropas.get(i).setText(risk.getTropasDpto(i) + "");
-            switch (risk.getJugadorDpto(i)){
-                case 0:
-                    cambiarColor(i, amarillo);
-                    break;
-                case 1:
-                    cambiarColor(i, azul);
-                    break;
-                case 2:
-                    cambiarColor(i, rojo);
-                    break;
-                case 3:
-                    cambiarColor(i,verde);
-                    break;
-                case 4:
-                    cambiarColor(i, gris);
-                    break;
-            }
+            cambiarColor(i, getColorJugador(risk.getJugadorDpto(i)));
         }
+    }
+
+    public void update(int dpto){
+        tropas.get(dpto).setText(risk.getTropasDpto(dpto) + "");
+        cambiarColor(dpto, getColorJugador(risk.getJugadorDpto(dpto)));
+    }
+
+    public void update(int dptoA, int dptoB){
+        tropas.get(dptoA).setText(risk.getTropasDpto(dptoA) + "");
+        tropas.get(dptoB).setText(risk.getTropasDpto(dptoB) + "");
+    }
+
+    public void update(int dptoA, int dptoB, boolean clickeado){
+        tropas.get(dptoA).setText(risk.getTropasDpto(dptoA) + "");
+        tropas.get(dptoB).setText(risk.getTropasDpto(dptoB) + "");
+        cambiarColorClick(dptoA, clickeado);
+        cambiarColorClick(dptoB, clickeado);
     }
 
     //datos de prueba en el metodo
@@ -269,11 +324,8 @@ public class PanelJuego extends JPanel implements MouseListener, MouseMotionList
         //msg.print(String.valueOf(x) + " " + String.valueOf(y));
 
         int dpto = checkDpto(x, y);
-        if(dpto > -1) {
-            seleccionarAtaque(dpto, 0);
-        }
+        if(dpto > -1) seleccionar(dpto, jugadorActual, faseActual);
 
-        cambiarFase();
 
 //        for(ArrayList<Integer> check: checkboxes){
 //            if(x >= check.get(1) && x < check.get(3) && y >= check.get(2) && y < check.get(4)){
@@ -288,28 +340,6 @@ public class PanelJuego extends JPanel implements MouseListener, MouseMotionList
 //                test.set(check.get(0), !test.get(check.get(0)));
 //                break;
 //            }
-//        }
-
-        int atk = 0;
-        int target = 0;
-        int jugador = 0;
-//        if(x > 390 && x < 600 &&
-//                y > 400 && y < 600){
-//            for (int i = 0; i < 32; i++) {
-//                cambiarColor(i, azul);
-//            }
-//            atk = 0;
-//            target = 1;
-//            jugador = 1;
-//            AtacarTerritorio atacar = new AtacarTerritorio(atk, target, jugador, risk, dados);
-//            //risk.setEnabled(false);
-//            String atkJ = String.valueOf(risk.getJugadorDpto(atk));
-//            String atkT = String.valueOf(risk.getTropasDpto(atk));
-//            String targetJ = String.valueOf(risk.getJugadorDpto(target));
-//            String targetT = String.valueOf(risk.getTropasDpto(target));
-//            texto3.setText("Dpto0 Jugador:" + atkJ + " Tropas:" + atkT +
-//                     " | Dpto1 " + "Jugador:" + targetJ + " Tropas:" + targetT);
-//
 //        }
     }
 

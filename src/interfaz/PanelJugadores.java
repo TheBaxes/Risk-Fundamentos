@@ -17,47 +17,46 @@ import javax.swing.border.*;
 public class PanelJugadores extends JPanel{
     private ArrayList<PanelJugador> jugadores;
     private Image img;
+    private JButton siguiente;
 
     
     public PanelJugadores(int numJugadores, Risk risk) {
         setPreferredSize(new Dimension(300, 0));
         
-        //img = new ImageIcon("res/paper background.png").getImage();
+        img = new ImageIcon("res/fondojugadores.png").getImage();
         
-        TitledBorder border = BorderFactory.createTitledBorder("Jugadores");
-        setBorder(border);
+        //TitledBorder border = BorderFactory.createTitledBorder("Jugadores");
+        //setBorder(border);
         
         setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
         
-        jugadores = new ArrayList<PanelJugador>(numJugadores);
-        c.insets = new Insets(5, 0, 8, 0);
+        jugadores = new ArrayList<>(numJugadores);
+        c.insets = new Insets(25, 13, 8, 0);
         c.fill = GridBagConstraints.HORIZONTAL;
         c.weighty = 0.0000001;
         c.anchor = GridBagConstraints.PAGE_START;
         for (int i = 0; i < numJugadores; i++) {
             c.gridy = i;
             PanelJugador jugador = new PanelJugador(i, risk);
-            /*
-            switch(i) {
-            case 0:
-            jugador.background(Color.red);
-            break;
-            case 1:
-            jugador.background(Color.cyan);
-            break;
-            case 2:
-            jugador.background(Color.green);
-            break;
-            case 3:
-            jugador.background(Color.orange);
-            }
-            */
             jugadores.add(jugador);
-            add(jugadores.get(i), c);
+            add(jugador, c);
             //c.anchor = GridBagConstraints.CENTER;
             c.weighty *= 100;
+            c.insets = new Insets(5, 13, 8, 0);
         }
+
+        siguiente = new JButton("");
+        siguiente.setEnabled(false);
+        GridBagConstraints d = new GridBagConstraints();
+        d.gridy = 4;
+        d.fill = GridBagConstraints.NONE;
+        d.insets = new Insets(10, 8, 20, 0);
+        add(siguiente, d);
+    }
+
+    public void cambiarBoton(String texto){
+        siguiente.setText(texto);
     }
 
     public void agregarCarta(int jugador, int carta){
@@ -68,8 +67,8 @@ public class PanelJugadores extends JPanel{
         jugadores.get(jugador).updateTropas();
     }
     
-//    public void paintComponent(Graphics page){
-//        page.drawImage(img, 0, 0, null);
-//    }
+    public void paintComponent(Graphics page){
+        page.drawImage(img, 0, 0, null);
+    }
     
 }
