@@ -11,15 +11,19 @@ import java.awt.*;
 import javax.swing.border.*;
 
 /**
- *
- * @author Baxes
+ * Clase PanelJugadores
+ * @author Sebastián Patiño Barrientos
  */
 public class PanelJugadores extends JPanel{
     private ArrayList<PanelJugador> jugadores;
     private Image img;
     private JButton siguiente;
 
-    
+    /**
+     * Crea un panel de jugadores
+     * @param numJugadores Cantidad de jugadores
+     * @param risk Referencia a la clase Risk
+     */
     public PanelJugadores(int numJugadores, Risk risk) {
         setPreferredSize(new Dimension(300, 0));
         
@@ -57,23 +61,44 @@ public class PanelJugadores extends JPanel{
         add(siguiente, d);
     }
 
+    /**
+     * Cambiar el mensaje del botón
+     * @param texto Texto
+     */
     public void cambiarBoton(String texto){
         siguiente.setText(texto);
         siguiente.setEnabled(true);
     }
 
+    /**
+     * Remueve un jugador de la interfaz
+     * @param jugador Jugador
+     */
     public void removerJugador(int jugador){
         getComponent(jugador).setVisible(false);
     }
 
+    /**
+     * Agrega una carta a un jugador
+     * @param jugador Jugador
+     * @param carta id Carta
+     */
     public void agregarCarta(int jugador, int carta){
         jugadores.get(jugador).agregarCarta(carta);
     }
 
+    /**
+     * Actualiza las tropas de un jugador
+     * @param jugador Jugador
+     */
     public void updateTropas(int jugador){
         jugadores.get(jugador).updateTropas();
     }
-    
+
+    /**
+     * Método que pinta el fondo
+     * @param page page
+     */
     public void paintComponent(Graphics page){
         page.drawImage(img, 0, 0, null);
     }

@@ -11,7 +11,7 @@ import java.awt.event.*;
 import java.util.ArrayList;
 
 /**
- *
+ * Clase PanelCartas
  * @author Baxes
  */
 public class PanelCartas extends JPanel{
@@ -25,6 +25,11 @@ public class PanelCartas extends JPanel{
     private Risk risk;
     GridBagConstraints c;
 
+    /**
+     * Crea un nuevo panel de cartas
+     * @param numJugador Número del jugador al que pertenece
+     * @param risk Referencia a la clase Risk
+     */
     public PanelCartas(int numJugador, Risk risk){
 //        TitledBorder border = new TitledBorder("Cartas:");
 //        setBorder(border);
@@ -61,6 +66,10 @@ public class PanelCartas extends JPanel{
         this.risk = risk;
     }
 
+    /**
+     * Agrega una carta nueva en la interfaz
+     * @param carta Carta a agregar
+     */
     public void agregarCarta(int carta){
         JLabel boton = new JLabel(cartaImg.get(carta));
         boton.addMouseListener(new MouseAdapter(){
@@ -73,8 +82,12 @@ public class PanelCartas extends JPanel{
         add(boton, c);
         c.weightx *= 50;
         risk.repaint();
+        risk.updateTropas(numJugador);
     }
 
+    /**
+     * Actualiza el panel en la interfaz
+     */
     public void update(){
         c.weightx /= (int)Math.pow(50.0,(double)cartas.size() + 1.0);
         removeAll();
@@ -87,7 +100,11 @@ public class PanelCartas extends JPanel{
         risk.repaint();
         risk.updateTropas(numJugador);
     }
-    
+
+    /**
+     * Método que selecciona una carta al hacer click en ella
+     * @param id Posición de la carta
+     */
     public void click(int id){
         if(cartasclick[id]){
             cartasclick[id] = false;
@@ -111,8 +128,12 @@ public class PanelCartas extends JPanel{
         }
         risk.repaint();
     }
-    
+
+    /**
+     * Método que deja el fondo transparente
+     * @param page page
+     */
     public void paintComponent(Graphics page){
-        
+
     }
 }

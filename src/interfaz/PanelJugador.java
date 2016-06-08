@@ -10,8 +10,8 @@ import javax.swing.border.*;
 import java.awt.*;
 
 /**
- *
- * @author Baxes
+ * Clase PanelJugador
+ * @author Sebastián Patiño Barrientos
  */
 public class PanelJugador extends JPanel{
     private JLabel tropas;
@@ -19,7 +19,12 @@ public class PanelJugador extends JPanel{
     private int jugador;
     private Image img;
     private Risk risk;
-    
+
+    /**
+     * Crea un panel de un jugador
+     * @param jugador id del jugador
+     * @param risk Referencia a la clase Risk
+     */
     public PanelJugador(int jugador, Risk risk){
         this.jugador = jugador;
         setPreferredSize(new Dimension(280, 120));
@@ -60,23 +65,25 @@ public class PanelJugador extends JPanel{
         this.risk = risk;
     }
 
+    /**
+     * Agrega una carta a la interfaz
+     * @param carta id Carta
+     */
     public void agregarCarta(int carta){
         cartas.agregarCarta(carta);
     }
 
+    /**
+     * Actualiza las tropas del jugador en la interfaz
+     */
     public void updateTropas(){
         tropas.setText("Tropas disponibles: " + risk.getTropasJugador(jugador));
     }
 
-    public void updateInfo(int num){
-        tropas.setText("Tipo carta: " + num);
-    }
-    
-//    public void background(Color color){
-//        tropas.setBackground(color);
-//                setBackground(color);
-//    }
-    
+    /**
+     * Método que pinta el fondo
+     * @param page page
+     */
     public void paintComponent(Graphics page){
         page.drawImage(img, 0, 0, null);
     }

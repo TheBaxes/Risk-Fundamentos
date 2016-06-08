@@ -16,11 +16,8 @@ import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-//REMOVER
-
-
 /**
- *
+ * Clase PanelJuego
  * @author Baxes
  */
 public class PanelJuego extends JPanel implements MouseListener, MouseMotionListener{
@@ -56,6 +53,10 @@ public class PanelJuego extends JPanel implements MouseListener, MouseMotionList
     private int faseActual;
     private int jugadorActual;
 
+    /**
+     * Crea el panel en el que se muestra el juego
+     * @param risk Referencia a la clase Risk
+     */
     public PanelJuego(Risk risk) {
         //setPreferredSize(new Dimension(700, 600));
 //        TitledBorder border = BorderFactory.createTitledBorder("Juego");
@@ -174,6 +175,9 @@ public class PanelJuego extends JPanel implements MouseListener, MouseMotionList
         jugadorActual = 0;
     }
 
+    /**
+     * Método que pinta las regiones en la ventana de juego
+     */
     public void mostrarRegiones(){
         for (int i = 0; i < 32; i++) {
             tropas.get(i).setText("");
@@ -200,6 +204,12 @@ public class PanelJuego extends JPanel implements MouseListener, MouseMotionList
         }
     }
 
+    /**
+     * Método que selecciona un territorio y ejecuta una acción dependiendo de la fase correspondiente
+     * @param dpto Departamento a seleccionar
+     * @param jugador Jugador que ejecuta la acción
+     * @param fase Fase
+     */
     public void seleccionar(int dpto, int jugador, int fase){
         if(seleccionid == dpto && fase > 1) {
             seleccionar = false;
@@ -220,6 +230,9 @@ public class PanelJuego extends JPanel implements MouseListener, MouseMotionList
                             risk.reduceTropasJugador(jugador, 1);
                             msg.print("El jugador " + (jugador + 1) + " ha agregado 1 tropa a " +
                                     risk.getNombreDpto(dpto));
+                            if(risk.getTropasJugador(jugador) == 0){
+                                risk.actionPerformed(new ActionEvent(this, 0, "siguiente"));
+                            }
                         } else {
                             JOptionPane.showMessageDialog(risk, "El jugador " + (jugador + 1)  + " no tiene más" +
                                     " tropas para ubicar", "Aviso", JOptionPane.WARNING_MESSAGE);
@@ -268,6 +281,11 @@ public class PanelJuego extends JPanel implements MouseListener, MouseMotionList
         }
     }
 
+    /**
+     * Método que cambia el color de un territorio
+     * @param dpto Departamento
+     * @param color Color
+     */
     public void cambiarColor(int dpto, Color color){
         BufferedImage territorio = mapaimg.get(dpto);
         for(int y = 0; y < territorio.getHeight(); y++)
@@ -283,11 +301,21 @@ public class PanelJuego extends JPanel implements MouseListener, MouseMotionList
         repaint();
     }
 
+    /**
+     * Método que cambia el color de un territorio por el de su estado de selección
+     * @param dpto Departamento
+     * @param clickeado Estado del departamento
+     */
     public void cambiarColorClick(int dpto, boolean clickeado){
         if (clickeado) cambiarColor(dpto, select);
         else cambiarColor(dpto, getColorJugador(risk.getJugadorDpto(dpto)));
     }
 
+    /**
+     * Método que retorna el color respectivo a cada jugador
+     * @param jugador Jugador
+     * @return Objeto color
+     */
     public Color getColorJugador(int jugador){
         switch (jugador) {
             case 0:
@@ -304,16 +332,31 @@ public class PanelJuego extends JPanel implements MouseListener, MouseMotionList
         return blanco;
     }
 
+    /**
+     * Método que actualiza la fase actual en la clase
+     * @param fase Fase
+     */
     public void cambiarFase(int fase){
         this.fase.setIcon(faseimg.get(fase));
         faseActual = fase;
     }
 
+    /**
+     * Método que cambia el jugador actual en la clase
+     * @param jugador Jugador
+     */
     public void cambiarJugador(int jugador){
         jugadorActual = jugador;
         risk.print("Turno del jugador " + (jugador + 1));
     }
 
+    /**
+     * Método que comprueba que territorio se encuentra en las coordenadas ingresadas.
+     * @param x Coordenada X
+     * @param y Coordenada Y
+     * @return Retorna el id del departamento clickeado. En caso de que no halla un territorio en las coordenadas
+     * se retorna -1
+     */
     public int checkDpto(int x, int y){
         for(ArrayList<Integer> check: checkboxes){
             if(x >= check.get(1) && x < check.get(3) && y >= check.get(2) && y < check.get(4)){
@@ -323,6 +366,9 @@ public class PanelJuego extends JPanel implements MouseListener, MouseMotionList
         return -1;
     }
 
+    /**
+     * Método que actualiza la interfaz (Genera mucho lag)
+     */
     public void update(){
         for (int i = 0; i < 32; i++) {
             tropas.get(i).setText(risk.getTropasDpto(i) + "");
@@ -330,20 +376,39 @@ public class PanelJuego extends JPanel implements MouseListener, MouseMotionList
         }
     }
 
+    /**
+     * Método que actualiza la cantidad de tropas de un territorio
+     * @param dpto Departamento
+     */
     public void updateTropas(int dpto){
         tropas.get(dpto).setText(risk.getTropasDpto(dpto) + "");
     }
 
+    /**
+     * Método que actualiza un departamento
+     * @param dpto Departamento
+     */
     public void update(int dpto){
         tropas.get(dpto).setText(risk.getTropasDpto(dpto) + "");
         cambiarColor(dpto, getColorJugador(risk.getJugadorDpto(dpto)));
     }
 
+    /**
+     * Método que actualiza las tropas de dos departamentos
+     * @param dptoA Departamento 1
+     * @param dptoB Departamento 2
+     */
     public void update(int dptoA, int dptoB){
         tropas.get(dptoA).setText(risk.getTropasDpto(dptoA) + "");
         tropas.get(dptoB).setText(risk.getTropasDpto(dptoB) + "");
     }
 
+    /**
+     * Método que actualiza las tropas y el estado de dos departamentos
+     * @param dptoA Departamento 1
+     * @param dptoB Departamento 2
+     * @param clickeado Estado de los departamentos
+     */
     public void update(int dptoA, int dptoB, boolean clickeado){
         tropas.get(dptoA).setText(risk.getTropasDpto(dptoA) + "");
         tropas.get(dptoB).setText(risk.getTropasDpto(dptoB) + "");
@@ -351,26 +416,42 @@ public class PanelJuego extends JPanel implements MouseListener, MouseMotionList
         cambiarColorClick(dptoB, clickeado);
     }
 
-    //datos de prueba en el metodo
+    /**
+     * Método que comprueba la ubicación del click y ejecuta el método seleccionar si se clickeo un territorio
+     * @param e Evento
+     */
     public void mouseClicked(MouseEvent e){
         int x = e.getX();
         int y = e.getY();
-        //msg.print(String.valueOf(x) + " " + String.valueOf(y));
-
         int dpto = checkDpto(x, y);
         if(dpto > -1) seleccionar(dpto, jugadorActual, faseActual);
     }
 
+    /**
+     * Método que comprueba si un pixel no es transparente en una imagen
+     * @param image Imagen
+     * @param x Coordenada X
+     * @param y Coordenada Y
+     * @return booleano con el resultado de la condición
+     */
     public static boolean isAlpha(BufferedImage image, int x, int y){
         return (image.getRGB(x, y) & 0xFF000000) == 0xFF000000;
     }
 
+    /**
+     * Método que pinta el fondo
+     * @param g g
+     */
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         g.drawImage(fondoimg, 0, 0, null);
     }
 
+    /**
+     * Método que muestra los datos del territorio en el que se encuentra el mouse
+     * @param e Evento
+     */
     @Override
     public void mouseMoved(MouseEvent e) {
         int x = e.getX();
@@ -390,22 +471,42 @@ public class PanelJuego extends JPanel implements MouseListener, MouseMotionList
         }
     }
 
+    /**
+     * Método sin usar
+     * @param e e
+     */
     @Override
     public void mousePressed(MouseEvent e){
     }
 
+    /**
+     * Método sin usar
+     * @param e e
+     */
     @Override
     public void mouseReleased(MouseEvent e){
     }
 
+    /**
+     * Método sin usar
+     * @param e e
+     */
     @Override
     public void mouseEntered(MouseEvent e){
     }
 
+    /**
+     * Método sin usar
+     * @param e e
+     */
     @Override
     public void mouseExited(MouseEvent e){
     }
 
+    /**
+     * Método sin usar
+     * @param e e
+     */
     @Override
     public void mouseDragged(MouseEvent e) {
 
