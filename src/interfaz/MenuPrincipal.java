@@ -9,13 +9,17 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- *
- * @author Baxes
+ * Clase MenuPrincipal
+ * @author Sebastián Patiño Barrientos
  */
 public class MenuPrincipal extends JFrame {
     private PanelMenuP menu;
+
+    /**
+     * Crea una nueva instancia del menú principal
+     */
     public MenuPrincipal(){
-        this.setTitle("Colombia Conquest");
+        this.setTitle("Conquest: Colombia");
         this.setSize(300,400);
         this.setLocationRelativeTo(null);
         this.setResizable(false);
@@ -26,16 +30,27 @@ public class MenuPrincipal extends JFrame {
         menu = new PanelMenuP(this);
         add(menu);
     }
-    
+
+    /**
+     * Método Main
+     * @param args Argumentos (No hay)
+     */
     public static void main (String[] args){
         MenuPrincipal menu = new MenuPrincipal();
         menu.setVisible(true);
     }
-    
+
+    /**
+     * Método que cierra la ventana
+     */
     public void salir(){
         this.dispose();
     }
-    
+
+    /**
+     * Método que abre una partida nueva
+     * @param jugadores Cantidad de jugadores
+     */
     public void abrirJuego(int jugadores){
         this.setVisible(false);
         Risk risk = new Risk(jugadores);

@@ -7,19 +7,18 @@ import java.awt.*;
 import java.awt.event.*;
 
 /**
- * Created by Sebastian Patiño Barrientos.
+ * Clase MoverTropas
+ * @author Sebastian Patiño Barrientos.
  */
 public class MoverTropas extends JFrame implements ActionListener{
     private WindowListener close = new WindowAdapter(){
         public void windowClosing(WindowEvent evt) {
             if(!conquista) {
-                for (int i = 0; i < tropas; i++) {
-                    tropas--;
-                    risk.moverTropas(idB, idA, 1);
-                }
+                risk.moverTropas(idB, idA, tropas);
                 risk.setEnabled(true);
                 risk.requestFocus();
                 dispose();
+                risk.update(idA, idB, false);
             }
         }
     };
@@ -39,6 +38,13 @@ public class MoverTropas extends JFrame implements ActionListener{
     private int tropas;
     private JLabel cantidadTropas;
 
+    /**
+     * Crea una ventana para mover Tropas
+     * @param idA Departamento que envía tropas
+     * @param idB Departamento que las recibe
+     * @param risk Referencia a la clase Risk
+     * @param conquista Si es verdadero entonces no se puede cancelar el movimiento de tropas
+     */
     public MoverTropas(int idA, int idB, Risk risk, boolean conquista){
         setTitle("Mover tropas");
         setSize(300, 200);
@@ -59,7 +65,7 @@ public class MoverTropas extends JFrame implements ActionListener{
         menos = new JButton("<");
         menos.addActionListener(this);
         menos.setActionCommand("menos");
-        reducir = new Timer(100, this);
+        reducir = new Timer(200, this);
         reducir.setActionCommand("reducir");
         menos.addMouseListener(new MouseAdapter() {
             @Override
@@ -75,7 +81,7 @@ public class MoverTropas extends JFrame implements ActionListener{
         mas = new JButton(">");
         mas.addActionListener(this);
         mas.setActionCommand("mas");
-        adicionar = new Timer(100, this);
+        adicionar = new Timer(200, this);
         adicionar.setActionCommand("adicionar");
         mas.addMouseListener(new MouseAdapter() {
             @Override
@@ -128,6 +134,10 @@ public class MoverTropas extends JFrame implements ActionListener{
         setVisible(true);
     }
 
+    /**
+     * Método que ejecuta el movimiento al presionar el botón
+     * @param e Evento
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         String command = e.getActionCommand();

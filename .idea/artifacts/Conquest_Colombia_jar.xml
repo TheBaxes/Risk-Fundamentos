@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Conquest Colombia:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/Conquest_Colombia_jar</output-path>
+    <root id="archive" name="Risk-Fundamentos.jar">
+      <element id="module-output" name="Risk-Fundamentos" />
+    </root>
+  </artifact>
+</component>

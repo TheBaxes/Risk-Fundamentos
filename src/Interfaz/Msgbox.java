@@ -5,12 +5,17 @@ import java.awt.event.*;
 import javax.swing.*;
 
 /**
- * Created by Sebastian Patiño Barrientos.
+ * Clase Msgbox
+ * @author Sebastian Patiño Barrientos.
  */
 public class Msgbox extends JPanel{
     public JScrollPane scroll;
     public JTextPane logs;
     public String text;
+
+    /**
+     * Crea un cuadro de registros
+     */
     public Msgbox() {
         setLayout(new GridBagLayout());
         setBackground(Color.white);
@@ -31,6 +36,10 @@ public class Msgbox extends JPanel{
 
     }
 
+    /**
+     * Método que muestra un mensaje en el cuadro de registros
+     * @param message Mensaje
+     */
     public void print(String message){
         text += "-" + message + "\n";
         logs.setText(text);

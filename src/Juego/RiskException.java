@@ -6,10 +6,14 @@
 package Juego;
 
 /**
- *
- * @author Baxes
+ * Excepción personalizada
+ * @author Sebastián Patiño Barrientos
  */
 public class RiskException extends Exception{
+    /**
+     * Crea una excepción personalizada para el juego
+     * @param message Mensaje a mostrar
+     */
     public RiskException(String message){
         super(message);
     }

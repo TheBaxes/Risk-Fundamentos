@@ -2,7 +2,7 @@
 2 Atlántico
 3 Magdalena
 4 La Guajira
-5 Cesar
+5 César
 6 Sucre
 7 Bolívar
 8 Norte de Santander
@@ -15,7 +15,7 @@
 15 Boyacá
 16 Arauca
 17 Valle del Cauca
-18 Quindio
+18 Quindío
 19 Tolima
 20 Cundinamarca
 21 Casanare
@@ -26,7 +26,7 @@
 26 Vichada
 27 Putumayo
 28 Caquetá
-29 Guavira
+29 Guaviare
 30 Guainía
 31 Vaupés
 32 Amazonas

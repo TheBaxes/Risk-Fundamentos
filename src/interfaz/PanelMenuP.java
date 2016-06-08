@@ -10,7 +10,7 @@ import java.awt.*;
 import java.awt.event.*;
 
 /**
- *
+ * Clase PanelMenuP
  * @author Baxes
  */
 public class PanelMenuP extends JPanel implements ActionListener{
@@ -19,13 +19,17 @@ public class PanelMenuP extends JPanel implements ActionListener{
     private JButton cuatroJ;
     private JButton salir;
     private MenuPrincipal menu;
-    
+
+    /**
+     * Crea el panel para el menu principal
+     * @param menu Referencia de la clase MenuPrincipal
+     */
     public PanelMenuP(MenuPrincipal menu){
         setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
         //setMaximumSize(new Dimension(250, 350));
         
-        JLabel a = new JLabel("Bienvenido a Colombia Conquest", SwingConstants.CENTER);
+        JLabel a = new JLabel("Bienvenido a Conquest: Colombia", SwingConstants.CENTER);
         c.gridy = 0;
         c.anchor = GridBagConstraints.PAGE_START;
         add(a, c);
@@ -75,7 +79,11 @@ public class PanelMenuP extends JPanel implements ActionListener{
         
         this.menu = menu;
     }
-    
+
+    /**
+     * Ejecuta una acción según el botón presionado en la interfaz
+     * @param evento Evento
+     */
     public void actionPerformed(ActionEvent evento){
         String comando = evento.getActionCommand();
         dosJ.setEnabled(false);
